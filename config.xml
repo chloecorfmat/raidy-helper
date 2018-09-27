@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.sixteam_itw.helper" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
-    <name>itw-helper</name>
+    <name>Raidy Helper</name>
     <description>
-        Hello World sample application that responds to the deviceready event.
+        Raidy helper
     </description>
-    <author email="support@phonegap.com" href="http://phonegap.com">
-        PhoneGap Team
+    <author email="contact.sixteam@gmail.com">
+        Sixteam
     </author>
     <content src="index.html" />
     <preference name="DisallowOverscroll" value="true" />
