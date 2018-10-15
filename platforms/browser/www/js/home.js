@@ -38,8 +38,16 @@ var app = {
     // Update DOM on a Received Event
     receivedEvent: function(id) {
 		console.log("Device is ready");
-		console.log("INDEX");
-        var b = check_authentification();
-		if (b) window.location.replace("home.html");
+		console.log("HOME");
+		var b = check_authentification();
+        main();
     }
 };
+
+function main() {
+	var name = localStorage.getItem('name');
+	document.getElementById('name').innerHTML = name;
+
+	var disconnection = document.getElementById("disconnect");
+	disconnection.addEventListener("click", disconnect);
+}
