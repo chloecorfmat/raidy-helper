@@ -38,8 +38,43 @@ var app = {
     // Update DOM on a Received Event
     receivedEvent: function(id) {
 		console.log("Device is ready");
-		console.log("INDEX");
-        var b = check_authentification();
-		if (b) window.location.replace("home.html");
+		console.log("CONNECTION");
+        initForm();
+		main()
     }
 };
+
+function main() {
+	var form = document.getElementsByTagName('form');
+	form = form[0];
+	form.addEventListener('submit', function(e) {
+		e.preventDefault();
+		submitConnection();
+		return false;
+	})
+}
+
+function submitConnection(e) {
+	var email = document.getElementById('email');
+	var pwd = document.getElementById('password');
+
+	var data = {email: email.value, password: pwd.value};
+	
+	var r = function(response, code) {
+		response = JSON.parse(response);
+		if (response.code==200) {
+			localStorage.setItem('isAuthenticated', 'true');
+			localStorage.setItem('token', response.token);
+			localStorage.setItem('name', email.value);
+			window.location.replace("home.html");
+		} else {
+			var msgBox = document.getElementById('form-error');
+			if (response.message = "Bad credentials") {
+				msgBox.innerHTML = "Mauvais identifiants";
+			} else {
+				msgBox.innerHTML = response.message;
+			}
+		}
+	};
+	apiCall("POST",'auth-tokens',data, r);
+}
