@@ -99,7 +99,7 @@ function show_raids_into_list(response_json) {
 		var e = document.createElement('div');
 		e.innerHTML = '<div class="raids--list-items">'+
 		'<div class="raid" id="raid-'+raid.id+'">'+
-			'<a href="raid.html?id='+raid.id+'">'+
+			'<a href="raid-helper.html?id='+raid.id+'">'+
 				'<div class="raid--content">'+
 					'<div class="raid--content-container">'+
 						'<p class="raid--name">'+raid.name+'</p>'+

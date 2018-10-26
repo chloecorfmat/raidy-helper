@@ -11,16 +11,16 @@
     padding: 0;
 
     li {
-      color: white;
+      color: $white;
       font-weight: normal;
       overflow: hidden;
       position: relative;
       text-align: center;
       width: 50%;
 
-      &:after {
-        background: #fff;
-        bottom:-1.5rem;
+      &::after {
+        background: $white;
+        bottom: -1.5rem;
         content: '';
         display: none;
         height: 2rem;
@@ -34,7 +34,8 @@
         button {
           font-weight: bold;
         }
-        &:after {
+
+        &::after {
           display: block;
         }
       }
