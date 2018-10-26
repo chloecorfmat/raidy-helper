@@ -27,6 +27,8 @@ var app = {
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
+        document.addEventListener('offline', this.onOffline, false);
+        document.addEventListener('online', this.onOnline, false);
     },
     // deviceready Event Handler
     //
@@ -35,6 +37,12 @@ var app = {
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
     },
+	onOffline: function() {
+		localStorage.setItem('online', false);
+	},
+	onOnline: function() {
+		localStorage.setItem('online', true);
+	},
     // Update DOM on a Received Event
     receivedEvent: function(id) {
 		console.log("Device is ready");
@@ -51,7 +59,13 @@ function main() {
 		e.preventDefault();
 		submitConnection();
 		return false;
-	})
+	});
+	
+	var online = localStorage.getItem('online');
+	var msgBox = document.getElementById('form-error');
+	if (online == 'false' || online == false) {
+		msgBox.innerHTML = "Connexion impossible sans internet";
+	}
 }
 
 function submitConnection(e) {
@@ -60,14 +74,15 @@ function submitConnection(e) {
 
 	var data = {email: email.value, password: pwd.value};
 	
-	var r = function(response, code) {
+	var r = function(response, http_code) {
 		response = JSON.parse(response);
-		if (response.code==200) {
+		if (http_code==200) {
 			localStorage.setItem('isAuthenticated', 'true');
 			localStorage.setItem('token', response.token);
 			localStorage.setItem('name', email.value);
 			window.location.replace("home.html");
 		} else {
+			console.log(response.code);
 			var msgBox = document.getElementById('form-error');
 			if (response.message = "Bad credentials") {
 				msgBox.innerHTML = "Mauvais identifiants";

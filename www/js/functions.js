@@ -1,6 +1,6 @@
-var api_path = 'https://preprod.raidy.sixteam.tech/';
 
-function apiCall(method, url, jsonData, callback=null) {
+
+function apiCall(method, url, jsonData=null, callback=null) {
 	if (callback==null) {
 		callback=function(a) {return true;}
 	}
@@ -18,8 +18,11 @@ function apiCall(method, url, jsonData, callback=null) {
 	if (localStorage.getItem('token')!=null) {
     	xhttp.setRequestHeader("X-Auth-Token", localStorage.getItem('token'));
 	}
-    xhttp.send(JSON.stringify(jsonData));
-
+    if (jsonData!=null) {
+		xhttp.send(JSON.stringify(jsonData));
+	} else {
+		xhttp.send();
+	}
 }
 
 function check_authentification() {
@@ -36,9 +39,31 @@ function check_authentification() {
 function disconnect() {
 	localStorage.setItem('isAuthenticated', 'false');
 	var token = localStorage.getItem('token');
-	
+
 	apiCall('DELETE', 'auth-tokens', {token: token});
 	localStorage.removeItem('token');
 	localStorage.removeItem('name');
 	window.location.replace("connection.html");
+}
+
+function getBase64Image(img) {
+    var canvas = document.createElement("canvas");
+    canvas.width = img.width;
+    canvas.height = img.height;
+
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+
+    var dataURL = canvas.toDataURL("image/png");
+
+    return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+}
+
+function getURLParameter(name, url) {
+    if (!url) url = location.href;
+    name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+    var regexS = "[\\?&]"+name+"=([^&#]*)";
+    var regex = new RegExp(regexS);
+    var results = regex.exec(url);
+    return results == null ? null : results[1];
 }
