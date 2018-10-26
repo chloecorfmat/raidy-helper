@@ -1,33 +1,33 @@
 .nav--tab {
 
-  background: $main-color;
+  background: $theme-color;
 
   ul {
     display: flex;
     flex-direction: row;
-    list-style: none;
-    padding: 0;
-    margin: 0;
     height: 3rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 
     li {
-      width: 50%;
-      text-align: center;
       color: white;
-      position: relative;
       font-weight: normal;
       overflow: hidden;
+      position: relative;
+      text-align: center;
+      width: 50%;
 
-      &:after{
-        display: none;
-        content: '';
-        position: absolute;
-        height: 2rem;
-        width: 2rem;
-        background: white;
-        transform: rotate(45deg);
+      &:after {
+        background: #fff;
         bottom:-1.5rem;
+        content: '';
+        display: none;
+        height: 2rem;
         left: calc(50% - 1rem);
+        position: absolute;
+        transform: rotate(45deg);
+        width: 2rem;
       }
 
       &.tab--active {
@@ -40,10 +40,10 @@
       }
 
       button {
-        width: 100%;
+        font-weight: normal;
         height: 2rem;
         padding: 0;
-        font-weight: normal;
+        width: 100%;
 
         &:focus {
           outline: none;
