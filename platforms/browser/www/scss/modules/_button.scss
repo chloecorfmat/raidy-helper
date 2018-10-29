@@ -27,6 +27,10 @@ button {
   &:hover {
     opacity: .8;
   }
+
+  &.full-width {
+    width:100%;
+  }
 }
 
 .btn--full-width {

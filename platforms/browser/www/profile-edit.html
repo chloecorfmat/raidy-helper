@@ -57,24 +57,48 @@
         </header>
         <main>
 			<div class="profile">
-				<h1>Mon profil</h1>
-				<p class="form--error" id="connection-error"></p>
-				<h2 id="name"></h2>
-				<div class="profile--contact-information">
-					<p>Prénom : <span id="firstname"></span></p>
-					<p>Nom : <span id="lastname"></span></p>
-					<p>Téléphone : <span id="phone"></span></p>
-					<p>E-mail : <span id="email"></span></p>
-				</div>
+				<form>
+					<h1>Modifier mon profil</h1>
+					<p class="form--error" id="form-error"></p>
+					<p class="form--error" id="connection-error"></p>
+					<div id="form">
+						<div class="form--item">
+							<label for="firstname">Prénom</label>
+							<input type="text" id="firstname" name="_firstname" value="" required="required" autocomplete="firstname" class="form--input-text"/>
+						</div>
+						<div class="form--item">
+							<label for="lastname">Nom</label>
+							<input type="text" id="lastname" name="_lastname" value="" required="required" autocomplete="lastname" class="form--input-text"/>
+						</div>
+						<div class="form--item">
+							<label for="phone">Téléphone</label>
+							<input type="tel" id="phone" name="_phone" value="" required="required" autocomplete="phone" class="form--input-tel"/>
+						</div>
+						<div class="form--item">
+							<label for="email">E-mail</label>
+							<input type="email" id="email" name="_email" value="" required="required" autocomplete="email" class="form--input-email"/>
+						</div>
+
+<!--
+						<div class="form--item">
+							<label for="password">Mot de passe</label>
+							<input type="password" id="password" name="_password" required="required" autocomplete="current-password" class="form--input-password" />
+						</div>
+-->
+						<div class="form--item-submit">
+							<input type="submit" id="_submit" name="_submit" value="Enregistrer" class="btn" id="form_submit" />
+						</div>
+					</div>
+				</form>
 			</div>
-           	<a href="profile-edit.html" id="btn-edition"><button class="btn full-width" type="button">Editer</button></a>
             
         </main>
     </div>
     <script type="text/javascript" src="cordova.js"></script>
+	<script type="text/javascript" src="js/forms-style.js"></script>
     <script type="text/javascript" src="js/variables.js"></script>
     <script type="text/javascript" src="js/functions.js"></script>
-    <script type="text/javascript" src="js/profile.js"></script>
+    <script type="text/javascript" src="js/profile-edit.js"></script>
     <script type="text/javascript">
         app.initialize();
     </script>
