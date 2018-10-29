@@ -57,4 +57,6 @@ function main() {
 	disconnection.addEventListener("click", disconnect);
 	
 
+//  GET
+//  /api/helper/raid/{id}
 }

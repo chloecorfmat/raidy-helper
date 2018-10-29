@@ -66,13 +66,26 @@
 				<div id="pois"></div>
 			</nav>
 			<div class="tab--content">
-				<div class="raids--list" id="raids--list">
-					<h1>Raid</h1>
+				<div class="contacts--list" id="contacts--list">
+					<h1>Contacts</h1>
+					<div class="contacts--list-items">
+						<div class="contact" id="contact-'+contact.id+'">
+							<div class="contact--content-container">
+								<p class="contact--title">Responsable sécurité</p>
+								<p class="contact--name">Alicia Rannou</p>
+							</div>
+							<div class="contact--content-icons">
+								<a href="tel:0606060606"><img src="img/icon-phone.svg" /></a>
+								<a href="sms:0606060606"><img src="img/icon-message.svg" /></a>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</main>
 	</div>
 	<script type="text/javascript" src="cordova.js"></script>
+	<script type="text/javascript" src="js/variables.js"></script>
 	<script type="text/javascript" src="js/functions.js"></script>
 	<script type="text/javascript" src="js/raid-contact.js"></script>
 	<script type="text/javascript">

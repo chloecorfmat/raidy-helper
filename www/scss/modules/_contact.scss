@@ -1,0 +1,28 @@
+.contact {
+  display: flex;
+  justify-content: space-between;
+
+  .contact--content-container {
+    width: 65%;
+
+    .contact--title {
+      margin-bottom: 0;
+    }
+
+    .contact--name {
+      font-size: .7rem;
+      margin-top: .5rem;
+    }
+  }
+
+  .contact--content-icons {
+    display: flex;
+    text-align: right;
+    width: 35%;
+
+    img {
+      margin: 1.2rem;
+      height: 1.5rem;
+    }
+  }
+}
