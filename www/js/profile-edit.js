@@ -48,7 +48,6 @@ var app = {
 		console.log("Device is ready");
 		console.log("HOME");
 		var b = check_authentification();
-		initForm();
         main();
     }
 };
@@ -98,13 +97,13 @@ function main() {
 }
 
 function submitForm() {
-	var email = document.getElementById('email');
-	var phone = document.getElementById('phone');
-	var firstname = document.getElementById('firstname');
-	var lastname = document.getElementById('lastname');
+	var email = document.getElementById('email').value;
+	var phone = document.getElementById('phone').value;
+	var firstname = document.getElementById('firstname').value;
+	var lastname = document.getElementById('lastname').value;
 
-	var data = {email: email.value, phone: phone.value, lastname: lastname.value, firstname: firstname.value};
-	
+	var data = {username:email, email: email, phone: phone, lastname: lastname, firstname: firstname};
+	console.log(data);
 	var r = function(response, http_code) {
 		response = JSON.parse(response);
 		if (http_code==200) {
@@ -125,9 +124,10 @@ function submitForm() {
 }
 
 function show_profile(response) {
-//	document.getElementById('name').value = response.username;
 	document.getElementById('firstname').value = response.firstname;
 	document.getElementById('lastname').value = response.lastname;
 	document.getElementById('phone').value = response.phone;
 	document.getElementById('email').value = response.email;
+	
+	initForm();
 }

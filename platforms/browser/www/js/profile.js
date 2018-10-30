@@ -91,7 +91,6 @@ function main() {
 }
 	
 function show_profile(response) {
-	document.getElementById('name').innerHTML = response.username;
 	document.getElementById('firstname').innerHTML = response.firstname;
 	document.getElementById('lastname').innerHTML = response.lastname;
 	document.getElementById('phone').innerHTML = response.phone;
