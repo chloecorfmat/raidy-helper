@@ -39,11 +39,9 @@ var app = {
     },
 	onOffline: function() {
 		localStorage.setItem('online', false);
-		document.getElementById("btn-edition").style.display = "none";
 	},
 	onOnline: function() {
 		localStorage.setItem('online', true);
-		document.getElementById("btn-edition").style.display = "inline";
 	},
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -55,6 +53,14 @@ var app = {
 };
 
 function main() {
+	var form = document.getElementsByTagName('form');
+	form = form[0];
+	form.addEventListener('submit', function(e) {
+		e.preventDefault();
+		submitForm();
+		return false;
+	});
+	
 	var profile = localStorage.getItem('profile');
 	console.log(profile);
 	if (profile==null) {
@@ -89,10 +95,39 @@ function main() {
 	var disconnection = document.getElementById("disconnect");
 	disconnection.addEventListener("click", disconnect);
 }
-	
+
+function submitForm() {
+	var email = document.getElementById('email').value;
+	var phone = document.getElementById('phone').value;
+	var firstname = document.getElementById('firstname').value;
+	var lastname = document.getElementById('lastname').value;
+
+	var data = {username:email, email: email, phone: phone, lastname: lastname, firstname: firstname};
+	console.log(data);
+	var r = function(response, http_code) {
+		response = JSON.parse(response);
+		if (http_code==200) {
+			localStorage.setItem('profile', JSON.stringify(data));
+			localStorage.setItem('name', email.value);
+			window.location.replace("profile.html");
+		} else {
+			console.log(response.code);
+			var msgBox = document.getElementById('form-error');
+			if (response.message == "Bad credentials") {
+				msgBox.innerHTML = "Identifiants invalides";
+			} else {
+				msgBox.innerHTML = response.message;
+			}
+		}
+	};
+	apiCall("PATCH",'profile',data, r);
+}
+
 function show_profile(response) {
-	document.getElementById('firstname').innerHTML = response.firstname;
-	document.getElementById('lastname').innerHTML = response.lastname;
-	document.getElementById('phone').innerHTML = response.phone;
-	document.getElementById('email').innerHTML = response.email;
+	document.getElementById('firstname').value = response.firstname;
+	document.getElementById('lastname').value = response.lastname;
+	document.getElementById('phone').value = response.phone;
+	document.getElementById('email').value = response.email;
+	
+	initForm();
 }

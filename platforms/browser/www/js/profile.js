@@ -39,9 +39,11 @@ var app = {
     },
 	onOffline: function() {
 		localStorage.setItem('online', false);
+		document.getElementById("btn-edition").style.display = "none";
 	},
 	onOnline: function() {
 		localStorage.setItem('online', true);
+		document.getElementById("btn-edition").style.display = "inline";
 	},
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -89,7 +91,6 @@ function main() {
 }
 	
 function show_profile(response) {
-	document.getElementById('name').innerHTML = response.username;
 	document.getElementById('firstname').innerHTML = response.firstname;
 	document.getElementById('lastname').innerHTML = response.lastname;
 	document.getElementById('phone').innerHTML = response.phone;
