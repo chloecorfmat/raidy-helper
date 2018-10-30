@@ -56,7 +56,7 @@ function main() {
 	var disconnection = document.getElementById("disconnect");
 	disconnection.addEventListener("click", disconnect);
 	
-
+	raidID = setIDintoTabs();
 //  GET
 //  /api/helper/raid/{id}
 }

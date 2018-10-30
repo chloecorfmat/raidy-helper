@@ -82,7 +82,7 @@ function main() {
 				console.log(response.code);
 			}
 		};
-		apiCall("GET",'helper/raids',null, r);
+		apiCall("GET",'helper/raid',null, r);
 	}
 }
 
@@ -110,7 +110,7 @@ function show_raids_into_list(response_json) {
 		raids.append(e);
 		var online = localStorage.getItem('online');
 		if (online == 'true' || online == true) {
-			document.getElementById('raid-'+raid.id).style.backgroundImage = 'url("'+raid.picture+'")';
+			document.getElementById('raid-'+raid.id).style.backgroundImage = 'url("'+api_path+"/uploads/raids/"+raid.picture+'")';
 		}
 	}
 }

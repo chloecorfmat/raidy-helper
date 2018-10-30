@@ -46,19 +46,6 @@ function disconnect() {
 	window.location.replace("connection.html");
 }
 
-function getBase64Image(img) {
-    var canvas = document.createElement("canvas");
-    canvas.width = img.width;
-    canvas.height = img.height;
-
-    var ctx = canvas.getContext("2d");
-    ctx.drawImage(img, 0, 0);
-
-    var dataURL = canvas.toDataURL("image/png");
-
-    return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
-}
-
 function getURLParameter(name, url) {
     if (!url) url = location.href;
     name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
@@ -66,4 +53,14 @@ function getURLParameter(name, url) {
     var regex = new RegExp(regexS);
     var results = regex.exec(url);
     return results == null ? null : results[1];
+}
+
+function setIDintoTabs() {
+	var id = getURLParameter("id");
+	
+	var links = document.querySelectorAll(".nav--tab a");
+	for(let i=0; i<links.length; i++) {
+		links[i].setAttribute("href", links[i].getAttribute("href")+"?id="+id);
+	}
+	return id;
 }

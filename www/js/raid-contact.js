@@ -56,27 +56,7 @@ function main() {
 	var disconnection = document.getElementById("disconnect");
 	disconnection.addEventListener("click", disconnect);
 
-	
-	raidID = 11;
-	
-	cont = [
-		{
-			"title": "Respo sec",
-			"phone": "0632453426",
-			"name": "Alicia Rannou"
-		},
-		{
-			"title": "Machin",
-			"phone": "0632453426",
-			"name": "Alicia Rannou"
-		},
-		{
-			"title": "Chef buvette",
-			"phone": "0632453426",
-			"name": "Alicia Rannou"
-		}];
-	cont = JSON.stringify(cont);
-	localStorage.setItem('contacts', cont);
+	raidID = setIDintoTabs();
 
 	// show contacts
 	var contacts = localStorage.getItem('contacts');
