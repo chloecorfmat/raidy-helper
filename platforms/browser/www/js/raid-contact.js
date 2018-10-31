@@ -56,10 +56,10 @@ function main() {
 	var disconnection = document.getElementById("disconnect");
 	disconnection.addEventListener("click", disconnect);
 
-	raidID = setIDintoTabs();
+	var raidID = setIDintoTabs();
 
 	// show contacts
-	var contacts = localStorage.getItem('contacts');
+	var contacts = localStorage.getItem('contacts-'+raidID);
 	if (contacts == null) {
 		document.getElementById('connection-error').innerHTML = "Liste des contacts indisponible sans internet";
 	} else {
@@ -74,7 +74,7 @@ function main() {
 		var r = function (response, http_code) {
 			var response_json = JSON.parse(response);
 			if (http_code == 200) {
-				localStorage.setItem('contacts', response);
+				localStorage.setItem('contacts-'+raidID, response);
 
 				show_contacts_into_list(response_json)
 
