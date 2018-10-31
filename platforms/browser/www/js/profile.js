@@ -54,7 +54,7 @@ var app = {
 
 function main() {
 	var profile = localStorage.getItem('profile');
-	console.log(profile);
+
 	if (profile==null) {
 		document.getElementById('connection-error').innerHTML = "Profil indisponible sans internet";
 	} else {

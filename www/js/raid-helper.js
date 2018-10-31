@@ -56,5 +56,5 @@ function main() {
 	var disconnection = document.getElementById("disconnect");
 	disconnection.addEventListener("click", disconnect);
 	
-
+	var raidID = setIDintoTabs();
 }
