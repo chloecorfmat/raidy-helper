@@ -20,7 +20,7 @@ var EditorMode = Object.freeze({
         },
         2: {
             name: "FOLLOW_POSITION",
-            value: 2
+            value: 1
         },
         3: {
             name: "POI_EDIT",
@@ -39,8 +39,8 @@ var MapManager = function(uimanager) {
     this.UIManager = uimanager;
 
     this.group = new L.featureGroup();
-
     this.group.addTo(this.map);
+
     this.waitingPoi = null;
     this.poiTypesMap = new Map();
     this.tracksMap = new Map();
@@ -55,7 +55,7 @@ var MapManager = function(uimanager) {
     }
 
     if (localStorage.poiTypes == undefined || localStorage.poiTypes == "") {
-        localStorage.poiTypes = "[]";
+        localStorage.poiTypes = "{}";
     }
 
     this.currentPositionMarker;
@@ -64,6 +64,8 @@ var MapManager = function(uimanager) {
     this.recorder = null;
     this.intervalRecord = 5000;
     this.newPoiPosition = null;
+
+    this.currentPosition = null;
 
     this.waypoints = [];
 
@@ -74,7 +76,7 @@ var MapManager = function(uimanager) {
     var keepThis = this;
 
     var baseLayer = L.tileLayer.offline('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: 'Map data {attribution.OpenStreetMap}',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/">OSM</a>',
         subdomains: 'abc',
         minZoom: 5,
         maxZoom: 19,
@@ -128,7 +130,7 @@ var MapManager = function(uimanager) {
     this.map.addControl(new BackToLocationCtrl());
 
     this.saveTilesControl = L.control.savetiles(baseLayer, {
-        'zoomlevels': [19],
+        'zoomlevels': [16],
         'position': 'topright',
         'confirm': function(layer, succescallback) {
             console.log("download " + layer._tilesforSave.length + " tiles");
@@ -158,12 +160,6 @@ MapManager.prototype.initialize = function() {
                 keepThis.waitingPoi = new Poi(keepThis.map);
                 keepThis.waitingPoi.marker.setLatLng(e.latlng);
 
-                if (editor.activeTab = "pois-pan") {
-                    keepThis.switchMode(EditorMode.POI_EDIT);
-                } else {
-                    keepThis.switchMode(EditorMode.READING);
-                }
-
                 break;
             case EditorMode.TRACK_EDIT:
                 break;
@@ -179,8 +175,12 @@ MapManager.prototype.initialize = function() {
     });
 
     this.loadRessources()
-        .then(this.loadTracks())
-        .then(this.loadPois());
+        .then(function(res){
+            return keepThis.loadTracks();
+        })
+        .then(function(res){
+            return keepThis.loadPois();
+        });
 
     this.startFollowLocation(); //Start geolocation follow
 }
@@ -190,53 +190,48 @@ MapManager.prototype.startFollowLocation = function() {
     var keepThis = this;
     var positionWatchId = navigator.geolocation.watchPosition(
         function(e) {
-            let latLng = new L.LatLng(e.coords.latitude, e.coords.longitude);
+            var latLng = new L.LatLng(e.coords.latitude, e.coords.longitude);
+            keepThis.currentPosition = latLng;
             if (keepThis.mode == EditorMode.FOLLOW_POSITION) {
                 mapManager.updateCurrentPosition(latLng);
             }
         }, null, {
-            'enableHighAccuracy': true
+            'enableHighAccuracy': true,
+            'maximumAge': 0
         });
     mapManager.switchMode(EditorMode.FOLLOW_POSITION);
 }
 
 MapManager.prototype.backToLocation = function() {
-
-    console.log("backToLocation");
     mapManager.switchMode(EditorMode.FOLLOW_POSITION);
-    navigator.geolocation.getCurrentPosition(
-        function(e) {
-            let latLng = new L.LatLng(e.coords.latitude, e.coords.longitude);
-            console.log(latLng);
-            mapManager.updateCurrentPosition(latLng);
-        }, null, {
-            'enableHighAccuracy': true
-        });
+
+    if (mapManager.currentPosition != null) {
+        mapManager.updateCurrentPosition(mapManager.currentPosition);
+    }
 }
 
 MapManager.prototype.recordLocation = function() {
-    var keepThis = this;
-    navigator.geolocation.getCurrentPosition(
-        function(e) {
-            let latLng = new L.LatLng(e.coords.latitude, e.coords.longitude);
-            keepThis.recordedTrack.line.addLatLng(latLng);
-            keepThis.recordedTrack.calculDistance();
-
-            localStorage.recordedTrack = keepThis.recordedTrack.toJSON();
-            keepThis.UIManager.updateRecordedDistance(keepThis.recordedTrack.distance);
-        }, null, {
-            'enableHighAccuracy': true
-        });
+    if (mapManager.currentPosition != null) {
+        this.recordedTrack.line.addLatLng(this.currentPosition);
+        this.recordedTrack.calculDistance();
+        localStorage.recordedTrack = this.recordedTrack.toJSON();
+        this.UIManager.updateRecordedDistance(this.recordedTrack.distance);
+    }
 }
+
 
 MapManager.prototype.loadRessources = function() {
     var keepThis = this;
-    return new Promise(function(resolve, reject){
-        if(localStorage.online == "true"){
+    return new Promise(function(resolve, reject) {
+        if (localStorage.online == "turtle") {
+           // warning testing value ^^^^^^^^ 	set true instead /!\
             console.log("Load poiTypes from server");
-            apiCall('GET', "organizer/poitype", null, function(responseText, status) {
+            apiCall('GET', "helper/raid/"+ raidID + "/poitype", null, function(responseText, status) {
                 if (status === 200) {
-                    localStorage.poiTypes = responseText;
+                    localPoiTypes = JSON.parse(localStorage.poiTypes);
+                    localPoiTypes[raidID] = responseText;
+
+                    localStorage.poiTypes = JSON.stringify(localPoiTypes);
                     var poiTypes = JSON.parse(responseText);
                     for (poiType of poiTypes) {
                         keepThis.poiTypesMap.set(poiType.id, poiType);
@@ -247,10 +242,10 @@ MapManager.prototype.loadRessources = function() {
                 }
             });
         } else {
-            console.log("Load poiTypes from local");
-            var poiTypes = JSON.parse(localStorage.poiTypes);
-            for (poiType of poiTypes) {
-                keepThis.poiTypesMap.set(poiType.id, poiType);
+              var allPoiTypes = JSON.parse(localStorage.poiTypes)[raidID];
+              var poiTypes = JSON.parse(allPoiTypes);
+              for (poiType of poiTypes) {
+                  keepThis.poiTypesMap.set(poiType.id, poiType);
             }
             resolve();
         }
@@ -260,12 +255,6 @@ MapManager.prototype.loadRessources = function() {
 MapManager.prototype.switchMode = function(mode) {
     if (this.mode != mode) this.lastMode = this.mode;
     this.mode = mode;
-    // console.log("Switch mode to : "+EditorMode.properties[mode].name);
-    switch (mode) {
-        case EditorMode.READING:
-            this.setPoiEditable(false);
-            break;
-    }
 }
 
 MapManager.prototype.addTrack = function(track) {
@@ -278,7 +267,7 @@ MapManager.prototype.loadTracks = function() {
     return new Promise(function(resolve, reject){
         if (localStorage.online == "true") {
             console.log("Load tracks from server");
-            apiCall('GET', "organizer/raid/" + raidID + "/track", null, function(responseText, status) {
+            apiCall('GET', "helper/raid/" + raidID + "/track", null, function(responseText, status) {
                 if (status === 200) {
                     var tracks = JSON.parse(responseText);
 
@@ -325,57 +314,61 @@ MapManager.prototype.loadTracks = function() {
 }
 
 MapManager.prototype.loadPois = function() {
-    if (localStorage.online == "true") {
-        console.log("Load Pois from server");
-        apiCall('GET', "organizer/raid/" + raidID + "/poi", null, function(responseText, status) {
-            if (status === 200) {
-                // console.log("Réponse reçue: %s", xhr_object.responseText);
-                var pois = JSON.parse(responseText);
 
-                var localPois = JSON.parse(localStorage.pois);
-                localPois[raidID] = responseText;
-                localStorage.pois = JSON.stringify(localPois);
+	return new Promise(function(resolve, reject) {
+		if (localStorage.online == "turtle") {
+          // warning testing value ^^^^^^^^ 	set true instead /!\
+		    console.log("Load Pois from server");
+		    apiCall('GET', "helper/raid/" + raidID + "/poi/user/"+userID, null, function(responseText, status) {
+		        if (status === 200) {
+		            // console.log("Réponse reçue: %s", xhr_object.responseText);
+		            var pois = JSON.parse(responseText);
 
-                for (poi of pois) {
-                    mapManager.addPoi(poi);
+		            var localPois = JSON.parse(localStorage.pois);
+		            localPois[raidID] = responseText;
+		            localStorage.pois = JSON.stringify(localPois);
+
+                    for (poi of pois) {
+                        mapManager.addPoi(poi);
+                    }
+                    if (pois.length > 0) {
+                        mapManager.map.fitBounds(mapManager.group.getBounds());
+                    }
+                    resolve();
+                } else {
+                    reject();
                 }
-                if (pois.length > 0) {
-                    mapManager.map.fitBounds(mapManager.group.getBounds());
-                }
-            } else {
-                // console.log("Status de la réponse: %d (%s)", xhr_object.status, xhr_object.statusText);
+
+		    });
+		} else {
+		    console.log("Load Pois from local");
+
+		    var allPois = JSON.parse(localStorage.pois)[raidID];
+		    if (allPois == undefined) {
+		        console.error('This raid is not saved on localStorage');
+		        return;
+		    }
+
+		    var pois = JSON.parse(allPois);
+            for (poi of pois) {
+                mapManager.addPoi(poi);
+            }
+            if (pois.length > 0) {
+                mapManager.map.fitBounds(mapManager.group.getBounds());
             }
 
-        });
-    } else {
-        console.log("Load Pois from local");
-
-        var allPois = JSON.parse(localStorage.pois)[raidID];
-
-        if (allPois == undefined) {
-            console.error('This raid is not saved on localStorage');
-            return;
+            resolve();
         }
-
-        var pois = JSON.parse(allPois);
-
-        for (poi of pois) {
-            mapManager.addPoi(poi);
-        }
-        if (pois.length > 0) {
-            mapManager.map.fitBounds(mapManager.group.getBounds());
-        }
-    }
-
+    });
     mapManager.switchMode(EditorMode.FOLLOW_POSITION);
 }
 
-MapManager.prototype.saveTracksLocal = function(){
+MapManager.prototype.saveTracksLocal = function() {
     var tracks = "[";
-    for(var track of this.tracksMap){
-        tracks += track[1].toJSON()+",";
+    for (var track of this.tracksMap) {
+        tracks += track[1].toJSON() + ",";
     }
-    var tracks = tracks.substring(0, tracks.length-1);
+    var tracks = tracks.substring(0, tracks.length - 1);
     tracks += "]";
 
     var localTracks = JSON.parse(localStorage.tracks);
@@ -383,12 +376,12 @@ MapManager.prototype.saveTracksLocal = function(){
     localStorage.tracks = JSON.stringify(localTracks);
 }
 
-MapManager.prototype.savePoisLocal = function(){
+MapManager.prototype.savePoisLocal = function() {
     var pois = "[";
-    for(var poi of this.poiMap){
-        pois += poi[1].toJSON()+",";
+    for (var poi of this.poiMap) {
+        pois += poi[1].toJSON() + ",";
     }
-    var pois = pois.substring(0, pois.length-1);
+    var pois = pois.substring(0, pois.length - 1);
     pois += "]";
 
     var localPois = JSON.parse(localStorage.pois);
@@ -399,14 +392,11 @@ MapManager.prototype.savePoisLocal = function(){
 MapManager.prototype.addPoi = function(poi) {
     newPoi = new Poi(this.map);
     newPoi.fromObj(poi);
+    //newPoi.name = htmlentities.decode(newPoi.name);
+    newPoi.buildUI();
     this.poiMap.set(poi.id, newPoi);
 }
 
-MapManager.prototype.setPoiEditable = function(b) {
-    this.poiMap.forEach(function(value, key, map) {
-        value.setEditable(b);
-    })
-}
 
 MapManager.prototype.updateCurrentPosition = function(latLng) {
 

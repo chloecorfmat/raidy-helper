@@ -97,28 +97,6 @@ Track.prototype.fromJSON = function(json){
    this.fromObj(track);
 }
 
-Track.prototype.push = function(){
-    var keepThis = this;
-    JSONApiCall('PATCH', "organizer/raid/"+raidID+"/track/"+this.id, this.toJSON(), function(responseText, status){
-        if (status === 200) {
-            li = document.getElementById("track-li-"+keepThis.id);
-            keepThis.calculDistance();
-            li.querySelector("label > span:nth-child(4)").innerHTML = "("+Math.round(10 * keepThis.distance / 1000) / 10 + " Km)";
-        }
-    });    
-}
-
-Track.prototype.remove = function(){
-    var keepThis = this;
-    JSONApiCall('DELETE', "organizer/raid/"+raidID+"/track/"+this.id, null, function(responseText, status){
-        if (status === 200) {
-            keepThis.map.removeLayer(keepThis.line);
-            li = document.getElementById("track-li-"+keepThis.id);
-            document.getElementById('editor--list').removeChild(li);
-        }
-    });
-}
-
 Track.prototype.buildUI = function(li){
     newTrack = this;
     li.id = "track-li-"+newTrack.id;

@@ -39,29 +39,14 @@ Poi.prototype.fromObj = function(poi) {
 
     this.marker.addTo(mapManager.group);
 
-
     this.marker.disableEdit();
-    this.marker.on("dragend", function (e) {
-        keepThis.push();
-    })
+
     this.buildUI();
 
 }
 Poi.prototype.fromJSON = function(json){
     var poi = JSON.parse(json);
     this.fromObj(poi);
-}
-Poi.prototype.setEditable = function (b) {
-    b ? this.marker.enableEdit() : this.marker.disableEdit();
-}
-
-Poi.prototype.push = function () {
-    var xhr_object = new XMLHttpRequest();
-    xhr_object.open("PATCH", "/organizer/raid/"+raidID+"/poi/"+this.id, true);
-    xhr_object.setRequestHeader("Content-Type","application/json");
-    xhr_object.send(this.toJSON());
-    //console.log(this.toJSON());
-
 }
 
 Poi.prototype.buildUI= function (){
@@ -95,16 +80,5 @@ Poi.prototype.buildUI= function (){
         popupAnchor: [0, -35],
         html: `<span style="${markerHtmlStyles}" />`
     });
-
     this.marker.setIcon(icon);
-
-}
-
-Poi.prototype.remove = function(){
-    var xhr_object = new XMLHttpRequest();
-    xhr_object.open("DELETE", "/organizer/raid/"+raidID+"/poi/"+this.id, true);
-    xhr_object.setRequestHeader("Content-Type","application/json");
-    xhr_object.send(null);
-
-    this.map.removeLayer(this.marker);
 }

@@ -24,9 +24,9 @@ var app = {
 		
 		if(cordova.plugins.backgroundMode != undefined){
             cordova.plugins.backgroundMode.configure({
-                color: '#78e08f',
-                text: 'Enregistrement en cours',
-                resume: 'Raidy Organizer calibre un parcours'
+                color: '#0f5e54',
+                text: 'Tâche en cours',
+                resume: 'Raidy Helper vous guide vers votre POI'
             });
             cordova.plugins.backgroundMode.on('activate', function() {
                 cordova.plugins.backgroundMode.disableWebViewOptimizations();
@@ -41,6 +41,7 @@ var app = {
 var map;
 var mapManager;
 var raidID = setIDintoTabs();
+var userID = localStorage.getItem("name");
 
 function main() {
 	var disconnection = document.getElementById("disconnect");
@@ -50,14 +51,14 @@ function main() {
     mapManager = new MapManager(uiManager);
     mapManager.initialize();
 	
-//	var options = {
-//        frequency: 1000
-//    };
-//    var watchID = navigator.compass.watchHeading(function(heading) {
-//        if(mapManager.currentPositionMarker != undefined){
-//            mapManager.currentPositionMarker.setRotationAngle(heading.magneticHeading);
-//        }
-//    }, null, options);
+	var options = {
+        frequency: 1000
+    };
+    var watchID = navigator.compass.watchHeading(function(heading) {
+        if(mapManager.currentPositionMarker != undefined){
+            mapManager.currentPositionMarker.setRotationAngle(heading.magneticHeading);
+        }
+    }, null, options);
 }
 
 var UID = {
