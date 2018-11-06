@@ -219,3 +219,48 @@
     margin: 0;
   }
 }
+
+
+// checkin button
+.checkInBox {
+  display: none;
+  
+  &.checkInBox--visible {
+    background-color: $white;
+    bottom: 0;
+    display: block;
+    margin: 5%;
+    padding: .5rem;
+    position: fixed;
+    text-align: center;
+    width: 90%;
+    z-index: 1000;
+
+
+    .mapLink {
+      background-position: center;
+      background-image: url('../../img/icon-pin.svg');
+      background-repeat: no-repeat;
+      background-size: 20px;
+      border: 1px solid $tertiary-color-3;
+      height: 30px;
+      width: 30px;
+    }
+
+    div {
+      display: flex;
+      justify-content: space-between;
+        p {
+          margin: .5em 0 0;
+        }
+    }
+
+    .checkin--out--zone {
+      background: $secondary-color-2;
+    }
+
+    .checkin--validated {
+      background: $main-color;
+    }
+  }
+}

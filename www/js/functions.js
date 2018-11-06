@@ -7,8 +7,6 @@ function apiCall(method, url, jsonData=null, callback=null) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
          if (this.readyState == 4) {
-			 console.log(this.responseText);
-			 console.log(this.status);
 			 callback(this.responseText, this.status);
          }
     };
@@ -27,7 +25,6 @@ function apiCall(method, url, jsonData=null, callback=null) {
 
 function check_authentification() {
 	var status = localStorage.getItem('isAuthenticated');
-	console.log (status);
 	if (status!="true") {
 		window.location.replace("connection.html");
 		return false;
