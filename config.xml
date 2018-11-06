@@ -86,6 +86,6 @@
     <plugin name="cordova-plugin-statusbar" spec="^2.4.2" />
     <plugin name="cordova-plugin-splashscreen" spec="~3.2.1" />
     <plugin name="cordova-plugin-network-information" spec="~1.2.0" />
-    <engine name="browser" spec="^5.0.4" />
     <plugin name="cordova-plugin-media" spec="^5.0.2" />
+    <engine name="browser" spec="^5.0.4" />
 </widget>

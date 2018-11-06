@@ -66,6 +66,8 @@ var MapManager = function(uimanager) {
     this.newPoiPosition = null;
 
     this.currentPosition = null;
+//    this.currentPosition = new L.LatLng(48.743,-3.40);;
+    this.currentPosition = new L.LatLng(48.742951755766,-3.4559850300534);;
 
     this.waypoints = [];
 
@@ -181,10 +183,9 @@ MapManager.prototype.initialize = function() {
         .then(function(res){
             return keepThis.loadPois();
         });
-
     this.startFollowLocation(); //Start geolocation follow
-}
 
+}
 
 MapManager.prototype.startFollowLocation = function() {
     var keepThis = this;
@@ -243,7 +244,8 @@ MapManager.prototype.loadRessources = function() {
             });
         } else {
               var allPoiTypes = JSON.parse(localStorage.poiTypes)[raidID];
-              var poiTypes = JSON.parse(allPoiTypes);
+//              var poiTypes = JSON.parse(allPoiTypes);
+			var poiTypes = JSON.parse('[{"id":1,"type":"Parking","color":"#78e08f"},{"id":2,"type":"Point Dangereux","color":"#f74a45"},{"id":3,"type":"Restauration","color":"#a88f73"}]');
               for (poiType of poiTypes) {
                   keepThis.poiTypesMap.set(poiType.id, poiType);
             }
@@ -274,12 +276,15 @@ MapManager.prototype.loadTracks = function() {
                     var localTracks = JSON.parse(localStorage.tracks);
                     localTracks[raidID] = responseText;
                     localStorage.tracks = JSON.stringify(localTracks);
-
+                    
+					var emptyTracks = 0;
                     for (track of tracks) {
                         mapManager.addTrack(track);
+                        if (track.trackpoints == "[]") {
+							emptyTracks+=1;
+						}
                     }
-
-                    if (tracks.length > 0) {
+                    if (tracks.length > 0 && tracks.length > emptyTracks) {
                         mapManager.map.fitBounds(mapManager.group.getBounds());
                         mapManager.saveTilesControl.setBounds(mapManager.group.getBounds());
                     }
@@ -298,12 +303,14 @@ MapManager.prototype.loadTracks = function() {
             }
 
             var tracks = JSON.parse(allTracks);
-
+			var emptyTracks = 0;
             for (track of tracks) {
                 mapManager.addTrack(track);
+				if (track.trackpoints == "[]") {
+					emptyTracks+=1;
+				}
             }
-
-            if (tracks.length > 0) {
+            if (tracks.length > 0 && emptyTracks!=tracks.length) {
                 mapManager.map.fitBounds(mapManager.group.getBounds());
                 mapManager.saveTilesControl.setBounds(mapManager.group.getBounds());
             }
@@ -316,26 +323,26 @@ MapManager.prototype.loadTracks = function() {
 MapManager.prototype.loadPois = function() {
 
 	return new Promise(function(resolve, reject) {
-		if (localStorage.online == "turtle") {
-          // warning testing value ^^^^^^^^ 	set true instead /!\
+		if (localStorage.online == "true") {
 		    console.log("Load Pois from server");
-		    apiCall('GET', "helper/raid/" + raidID + "/poi/user/"+userID, null, function(responseText, status) {
+		    apiCall('GET', "helper/raid/" + raidID + "/poi", null, function(responseText, status) {
 		        if (status === 200) {
-		            // console.log("Réponse reçue: %s", xhr_object.responseText);
-		            var pois = JSON.parse(responseText);
+		            var poi = JSON.parse(responseText);
 
 		            var localPois = JSON.parse(localStorage.pois);
 		            localPois[raidID] = responseText;
 		            localStorage.pois = JSON.stringify(localPois);
 
-                    for (poi of pois) {
-                        mapManager.addPoi(poi);
-                    }
-                    if (pois.length > 0) {
+					mapManager.addPoi(poi);
+                    if (poi.length > 0) {
                         mapManager.map.fitBounds(mapManager.group.getBounds());
+                        mapManager.UIManager.showCheckInBox();
                     }
                     resolve();
-                } else {
+                } else if (status === 404) {
+					// no attributed poi
+					mapManager.UIManager.hideCheckInBox();
+				} else {
                     reject();
                 }
 
@@ -349,12 +356,12 @@ MapManager.prototype.loadPois = function() {
 		        return;
 		    }
 
-		    var pois = JSON.parse(allPois);
-            for (poi of pois) {
-                mapManager.addPoi(poi);
-            }
+		    var poi = JSON.parse(allPois);
+			mapManager.addPoi(poi);
+
             if (pois.length > 0) {
                 mapManager.map.fitBounds(mapManager.group.getBounds());
+                mapManager.UIManager.showCheckInBox();
             }
 
             resolve();
@@ -393,15 +400,22 @@ MapManager.prototype.addPoi = function(poi) {
     newPoi = new Poi(this.map);
     newPoi.fromObj(poi);
     //newPoi.name = htmlentities.decode(newPoi.name);
-    newPoi.buildUI();
-    this.poiMap.set(poi.id, newPoi);
+//    this.poiMap.set(poi.id, newPoi);
+    this.poiMap.set(0, newPoi);
+	// only one POI -> my assigned poi
+	console.log(poi);
+	console.log(poi.marker);
+	console.log(poi.longitude);
+	console.log(poi.latitude);
+	document.getElementById("myPoiName").innerHTML = poi.name;
+	document.getElementById("mapLink").setAttribute("href","http://maps.apple.com/maps?q="+poi.latitude+","+poi.longitude);
+	
+	this.UIManager.updatePoiDistance(this.getDistanceToPoi());
 }
-
 
 MapManager.prototype.updateCurrentPosition = function(latLng) {
 
     this.map.setView(latLng, 20);
-
     if (this.currentPositionMarker == null) {
 
         var icon = L.icon({
@@ -418,4 +432,21 @@ MapManager.prototype.updateCurrentPosition = function(latLng) {
     } else {
         this.currentPositionMarker.setLatLng(latLng);
     }
+	this.UIManager.updatePoiDistance(this.getDistanceToPoi());
+}
+
+MapManager.prototype.getDistanceToPoi = function() {
+	if (this.poiMap.get(0) != undefined) {
+		var d = Math.round(this.poiMap.get(0).marker.getLatLng().distanceTo(this.currentPosition));
+		if (false) {
+			this.UIManager.displayCheckInPoi();
+		} else if (d<=10) {
+			this.UIManager.displayCheckinInZone();
+		} else {
+			this.UIManager.displayCheckinOutZone();
+		}
+		return d;
+	} else {
+		return null;
+	}
 }

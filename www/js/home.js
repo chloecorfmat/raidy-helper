@@ -38,17 +38,13 @@ var app = {
         app.receivedEvent('deviceready');
     },
 	onOffline: function() {
-		console.log("OFFLINE");
 		localStorage.setItem('online', false);
 	},
 	onOnline: function() {
-		console.log("ONLINE");
 		localStorage.setItem('online', true);
 	},
     // Update DOM on a Received Event
     receivedEvent: function(id) {
-		console.log("Device is ready");
-		console.log("HOME");
 		var b = check_authentification();
         main();
     }
@@ -69,7 +65,6 @@ function main() {
 
 	//refresh if online
 	var online = localStorage.getItem('online');
-	console.log(online);
 	if (online == 'true' || online == true) {
 		var r = function(response, http_code) {
 			var response_json = JSON.parse(response);
@@ -92,7 +87,6 @@ function show_raids_into_list(response_json) {
 	
 	for (var i=0; i<response_json.length; i=i+1) {
 		var raid = response_json[i];
-		console.log(raid);
 		var date = new Date(raid.date.date);
 		var month = date.getMonth()+1;
 		date = date.getDate() +"/"+ month +"/"+ date.getFullYear();

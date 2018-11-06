@@ -41,7 +41,6 @@ var app = {
 var map;
 var mapManager;
 var raidID = setIDintoTabs();
-var userID = localStorage.getItem("name");
 
 function main() {
 	var disconnection = document.getElementById("disconnect");
