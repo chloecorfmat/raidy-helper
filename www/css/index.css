@@ -1,0 +1,32 @@
+.app > header .icon {
+	height: 1.5rem;
+	margin: 0.7rem;
+}
+/*
+header .left {
+	float: left;
+}
+
+header .right {
+	float: right;
+}
+*/
+.app > header {
+	position: fixed;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+main {
+	margin-top: 5rem;
+}
+
+.app > header .logo {
+	height: 3rem;
+	margin: auto;
+	padding-left: 3.6rem;
+}
+
+.app > header.no-back {
+	padding-left: 2.55rem;
+}

@@ -1,39 +1,12 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 var app = {
-    // Application Constructor
     initialize: function() {
         this.bindEvents();
     },
-    // Bind Event Listeners
-    //
-    // Bind any events that are required on startup. Common events are:
-    // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
         document.addEventListener('offline', this.onOffline, false);
         document.addEventListener('online', this.onOnline, false);
     },
-    // deviceready Event Handler
-    //
-    // The scope of 'this' is the event. In order to call the 'receivedEvent'
-    // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
     },
@@ -48,13 +21,65 @@ var app = {
 		console.log("Device is ready");
 		console.log("Raids");
 		var b = check_authentification();
+		
+		if(cordova.plugins.backgroundMode != undefined){
+            cordova.plugins.backgroundMode.configure({
+                color: '#0f5e54',
+                text: 'Tâche en cours',
+                resume: 'Raidy Helper vous guide vers votre POI'
+            });
+            cordova.plugins.backgroundMode.on('activate', function() {
+                cordova.plugins.backgroundMode.disableWebViewOptimizations();
+            });
+        }
+
+        initForm();
         main();
     }
 };
+
+var map;
+var mapManager;
+var raidID = setIDintoTabs();
+var userID = localStorage.getItem("name");
 
 function main() {
 	var disconnection = document.getElementById("disconnect");
 	disconnection.addEventListener("click", disconnect);
 	
-	var raidID = setIDintoTabs();
+	var uiManager = new UIManager();
+    mapManager = new MapManager(uiManager);
+    mapManager.initialize();
+	
+	var options = {
+        frequency: 1000
+    };
+    var watchID = navigator.compass.watchHeading(function(heading) {
+        if(mapManager.currentPositionMarker != undefined){
+            mapManager.currentPositionMarker.setRotationAngle(heading.magneticHeading);
+        }
+    }, null, options);
 }
+
+var UID = {
+    _current: 0,
+    getNew: function() {
+        this._current++;
+        return this._current;
+    }
+};
+
+HTMLElement.prototype.pseudoStyle = function(element, prop, value) {
+    var _this = this;
+    var _sheetId = "pseudoStyles";
+    var _head = document.head || document.getElementsByTagName('head')[0];
+    var _sheet = document.getElementById(_sheetId) || document.createElement('style');
+    _sheet.id = _sheetId;
+    var className = "pseudoStyle" + UID.getNew();
+
+    _this.className += " " + className;
+
+    _sheet.innerHTML += " ." + className + ":" + element + "{" + prop + ":" + value + "}";
+    _head.appendChild(_sheet);
+    return this;
+};
