@@ -61,3 +61,38 @@ function setIDintoTabs() {
 	}
 	return id;
 }
+
+function showBottom(message) {
+  window.plugins.toast.showWithOptions(
+    {
+      message: message,
+      duration: "short", // which is 2000 ms. "long" is 4000. Or specify the nr of ms yourself.
+      position: "bottom",
+      addPixelsY: -40  // added a negative value to move it up a bit (default 0)
+    }
+//    onSuccess, // optional
+//    onError    // optional
+  );
+}
+
+var checkin = function() {
+  var online = localStorage.getItem('online');
+	if (online == 'true' || online == true) {
+		var r = function(response, http_code) {
+			var response_json = JSON.parse(response);
+			if (http_code==200) {
+				document.getElementById('checkInButton').classList.add('checkin--validated');
+				document.getElementById('checkInButton').innerHTML = 'Position validée';
+				document.getElementById('checkInButton').removeEventListener("click", checkin);
+				var checkins = JSON.parse(localStorage.checkins);
+				checkins[raidID] = true;
+				localStorage.checkins = JSON.stringify(checkins);
+				console.log(response.code);
+			} else {
+				showBottom("Aucune connexion");
+				console.log(response.code);
+			}
+		};
+		apiCall("GET",'helper/raid/'+raidID+'/check-in',null, r);
+	}
+}

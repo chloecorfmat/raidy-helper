@@ -255,12 +255,15 @@
         }
     }
 
-    .checkin--out--zone {
+    button {
       background: $secondary-color-2;
+        &.checkin--in--zone {
+          background: $theme-color-secondary;
+      }
+      &.checkin--validated {
+        background: $main-color;
+      }
     }
 
-    .checkin--validated {
-      background: $main-color;
-    }
   }
 }

@@ -67,7 +67,8 @@ var MapManager = function(uimanager) {
 
     this.currentPosition = null;
 //    this.currentPosition = new L.LatLng(48.743,-3.40);;
-    this.currentPosition = new L.LatLng(48.742951755766,-3.4559850300534);;
+//    this.currentPosition = new L.LatLng(48.740707649141,-3.4593216011262); // exact
+    this.currentPosition = new L.LatLng(48.7408,-3.45932); // 10m
 
     this.waypoints = [];
 
@@ -436,7 +437,11 @@ MapManager.prototype.updateCurrentPosition = function(latLng) {
 }
 
 MapManager.prototype.getDistanceToPoi = function() {
-	if (this.poiMap.get(0) != undefined) {
+	var checkins = [];
+	if (localStorage.checkins!=undefined) {
+		checkins = JSON.parse(localStorage.checkins);
+	}
+	if (this.poiMap.get(0) != undefined && null==checkins[raidID]) {
 		var d = Math.round(this.poiMap.get(0).marker.getLatLng().distanceTo(this.currentPosition));
 		if (false) {
 			this.UIManager.displayCheckInPoi();
@@ -450,3 +455,4 @@ MapManager.prototype.getDistanceToPoi = function() {
 		return null;
 	}
 }
+

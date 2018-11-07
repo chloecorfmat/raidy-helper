@@ -58,6 +58,8 @@ function main() {
             mapManager.currentPositionMarker.setRotationAngle(heading.magneticHeading);
         }
     }, null, options);
+  
+  document.getElementById("checkInButton").addEventListener("click", showBottom("Checked in"));
 }
 
 var UID = {
