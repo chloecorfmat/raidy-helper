@@ -37,7 +37,13 @@ UIManager.prototype.hideCheckInBox = function() {
 	document.getElementById('checkInBox').classList.remove("checkInBox--visible")
 }
 UIManager.prototype.updatePoiDistance = function(distance) {
-  if (distance !=null) {
-    document.getElementById('myPoiDistance').innerHTML = distance + "m";
-  }
+	if (distance !=null) {
+		if (distance.toString().length >=4) {
+			distance = distance/1000 + "k";
+		}
+		document.getElementById('myPoiDistance').innerHTML = distance + "m";
+	} else {
+		document.getElementById('checkInButton').addEventListener("click", checkin);
+		document.getElementById('checkInButton').innerHTML = 'Géolocalisation impossible';
+	}
 }

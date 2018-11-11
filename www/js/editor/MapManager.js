@@ -57,6 +57,10 @@ var MapManager = function(uimanager) {
     if (localStorage.poiTypes == undefined || localStorage.poiTypes == "") {
         localStorage.poiTypes = "{}";
     }
+	
+	if (localStorage.checkins == undefined || localStorage.checkins == "") {
+        localStorage.checkins = "{}";
+    }
 
     this.currentPositionMarker;
     this.recordTrack = false;
@@ -68,7 +72,7 @@ var MapManager = function(uimanager) {
     this.currentPosition = null;
 //    this.currentPosition = new L.LatLng(48.743,-3.40);;
 //    this.currentPosition = new L.LatLng(48.740707649141,-3.4593216011262); // exact
-    this.currentPosition = new L.LatLng(48.7408,-3.45932); // 10m
+//    this.currentPosition = new L.LatLng(48.727927744892,-3.4603740193799); // 10m
 
     this.waypoints = [];
 
@@ -221,12 +225,10 @@ MapManager.prototype.recordLocation = function() {
     }
 }
 
-
 MapManager.prototype.loadRessources = function() {
     var keepThis = this;
     return new Promise(function(resolve, reject) {
-        if (localStorage.online == "turtle") {
-           // warning testing value ^^^^^^^^ 	set true instead /!\
+        if (localStorage.online == "true") {
             console.log("Load poiTypes from server");
             apiCall('GET', "helper/raid/"+ raidID + "/poitype", null, function(responseText, status) {
                 if (status === 200) {
@@ -244,12 +246,11 @@ MapManager.prototype.loadRessources = function() {
                 }
             });
         } else {
-              var allPoiTypes = JSON.parse(localStorage.poiTypes)[raidID];
-//              var poiTypes = JSON.parse(allPoiTypes);
-			var poiTypes = JSON.parse('[{"id":1,"type":"Parking","color":"#78e08f"},{"id":2,"type":"Point Dangereux","color":"#f74a45"},{"id":3,"type":"Restauration","color":"#a88f73"}]');
-              for (poiType of poiTypes) {
-                  keepThis.poiTypesMap.set(poiType.id, poiType);
-            }
+			var allPoiTypes = JSON.parse(localStorage.poiTypes)[raidID];
+			var poiTypes = JSON.parse(allPoiTypes);
+			for (poiType of poiTypes) {
+				keepThis.poiTypesMap.set(poiType.id, poiType);
+			}
             resolve();
         }
     });
@@ -404,8 +405,7 @@ MapManager.prototype.addPoi = function(poi) {
 //    this.poiMap.set(poi.id, newPoi);
     this.poiMap.set(0, newPoi);
 	// only one POI -> my assigned poi
-	console.log(poi);
-	console.log(poi.marker);
+
 	console.log(poi.longitude);
 	console.log(poi.latitude);
 	document.getElementById("myPoiName").innerHTML = poi.name;
@@ -437,13 +437,13 @@ MapManager.prototype.updateCurrentPosition = function(latLng) {
 }
 
 MapManager.prototype.getDistanceToPoi = function() {
-	var checkins = [];
-	if (localStorage.checkins!=undefined) {
-		checkins = JSON.parse(localStorage.checkins);
-	}
-	if (this.poiMap.get(0) != undefined && null==checkins[raidID]) {
+	var checkins = {};
+//	if (localStorage.checkins!=undefined) {
+//		checkins = JSON.parse(localStorage.checkins);
+//	}
+	if (this.poiMap.get(0) != undefined && this.currentPosition!=null) {
 		var d = Math.round(this.poiMap.get(0).marker.getLatLng().distanceTo(this.currentPosition));
-		if (false) {
+		if (checkins[raidID] == true) {
 			this.UIManager.displayCheckInPoi();
 		} else if (d<=10) {
 			this.UIManager.displayCheckinInZone();
@@ -452,6 +452,7 @@ MapManager.prototype.getDistanceToPoi = function() {
 		}
 		return d;
 	} else {
+		console.log('NO POSITION DETECTED');
 		return null;
 	}
 }

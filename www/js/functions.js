@@ -63,7 +63,10 @@ function setIDintoTabs() {
 }
 
 function showBottom(message) {
-  window.plugins.toast.showWithOptions(
+	console.log("###################");
+	console.log(message);
+	console.log("###################");
+	toast.showWithOptions(
     {
       message: message,
       duration: "short", // which is 2000 ms. "long" is 4000. Or specify the nr of ms yourself.
@@ -77,7 +80,7 @@ function showBottom(message) {
 
 var checkin = function() {
   var online = localStorage.getItem('online');
-	if (online == 'true' || online == true) {
+	if (online == 'true' || online == "true") {
 		var r = function(response, http_code) {
 			var response_json = JSON.parse(response);
 			if (http_code==200) {
@@ -94,5 +97,13 @@ var checkin = function() {
 			}
 		};
 		apiCall("GET",'helper/raid/'+raidID+'/check-in',null, r);
+	} else {
+		showBottom("Aucune connexion");
+		document.getElementById('checkInButton').classList.add('checkin--validated');
+				document.getElementById('checkInButton').innerHTML = 'Position validée';
+				document.getElementById('checkInButton').removeEventListener("click", checkin);
+				var checkins = JSON.parse(localStorage.checkins);
+				checkins[raidID] = true;
+				localStorage.checkins = JSON.stringify(checkins);
 	}
 }
