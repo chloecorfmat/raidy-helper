@@ -62,20 +62,23 @@ function setIDintoTabs() {
 	return id;
 }
 
-function showBottom(message) {
-	console.log("###################");
-	console.log(message);
-	console.log("###################");
-	toast.showWithOptions(
-    {
-      message: message,
-      duration: "short", // which is 2000 ms. "long" is 4000. Or specify the nr of ms yourself.
-      position: "bottom",
-      addPixelsY: -40  // added a negative value to move it up a bit (default 0)
-    }
-//    onSuccess, // optional
-//    onError    // optional
-  );
+function showToast(message) {
+	// one toast at a time
+	if (document.getElementsByClassName('toast--container').length == 0) {
+		var body = document.getElementsByTagName("body");
+		var e = document.createElement('div');
+		e.classList.add('toast--container')
+		e.innerHTML = '<p class="toast--message">'+message+'</p>';
+		body[0].append(e);
+
+		// self destruct
+		setTimeout(function() {
+			e.classList.add('toast--disapear');
+		}, 2000);
+		setTimeout(function() {
+			body[0].removeChild(e);
+		}, 3500);
+	}
 }
 
 var checkin = function() {
@@ -91,17 +94,11 @@ var checkin = function() {
 				checkins[raidID] = true;
 				localStorage.checkins = JSON.stringify(checkins);
 			} else {
-				showBottom("Aucune connexion");
+				showToast("Échec de la validation");
 			}
 		};
 		apiCall("PUT",'helper/raid/'+raidID+'/check-in',null, r);
 	} else {
-		showBottom("Aucune connexion");
-		document.getElementById('checkInButton').classList.add('checkin--validated');
-				document.getElementById('checkInButton').innerHTML = 'Position validée';
-				document.getElementById('checkInButton').removeEventListener("click", checkin);
-				var checkins = JSON.parse(localStorage.checkins);
-				checkins[raidID] = true;
-				localStorage.checkins = JSON.stringify(checkins);
+		showToast("Aucune connexion");
 	}
 }

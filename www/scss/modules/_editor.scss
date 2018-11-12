@@ -224,7 +224,7 @@
 // checkin button
 .checkInBox {
   display: none;
-  
+
   &.checkInBox--visible {
     background-color: $white;
     bottom: 0;
@@ -238,8 +238,8 @@
 
 
     .mapLink {
-      background-position: center;
       background-image: url('../../img/icon-pin.svg');
+      background-position: center;
       background-repeat: no-repeat;
       background-size: 20px;
       border: 1px solid $tertiary-color-3;
@@ -250,20 +250,22 @@
     div {
       display: flex;
       justify-content: space-between;
-        p {
-          margin: .5em 0 0;
-        }
+
+      p {
+        margin: .5em 0 0;
+      }
     }
 
     button {
       background: $secondary-color-2;
-        &.checkin--in--zone {
-          background: $theme-color-secondary;
+
+      &.checkin--in--zone {
+        background: $theme-color-secondary;
       }
+
       &.checkin--validated {
         background: $main-color;
       }
     }
-
   }
 }

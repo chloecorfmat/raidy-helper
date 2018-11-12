@@ -78,6 +78,7 @@ function submitConnection(e) {
 			localStorage.setItem('isAuthenticated', 'true');
 			localStorage.setItem('token', response.token);
 			localStorage.setItem('name', email.value);
+			localStorage.setItem('online', true);
 			window.location.replace("home.html");
 		} else {
 			var msgBox = document.getElementById('form-error');
