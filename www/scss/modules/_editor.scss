@@ -228,6 +228,7 @@
   &.checkInBox--visible {
     background-color: $white;
     bottom: 0;
+    box-sizing: border-box;
     display: block;
     margin: 5%;
     padding: .5rem;

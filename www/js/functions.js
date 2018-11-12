@@ -93,6 +93,11 @@ var checkin = function() {
 				var checkins = JSON.parse(localStorage.checkins);
 				checkins[raidID] = true;
 				localStorage.checkins = JSON.stringify(checkins);
+			} else if (http_code==403) {
+				console.log(response.message);
+				if (response.message=="Bad day") {
+					showToast("Ce raid n'a pas lieu aujourd'hui")
+				}
 			} else {
 				showToast("Échec de la validation");
 			}
