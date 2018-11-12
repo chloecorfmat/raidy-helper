@@ -43,7 +43,6 @@ UIManager.prototype.updatePoiDistance = function(distance) {
 		}
 		document.getElementById('myPoiDistance').innerHTML = distance + "m";
 	} else {
-		document.getElementById('checkInButton').addEventListener("click", checkin);
 		document.getElementById('checkInButton').innerHTML = 'Géolocalisation impossible';
 	}
 }

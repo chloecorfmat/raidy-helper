@@ -72,6 +72,7 @@ var MapManager = function(uimanager) {
     this.currentPosition = null;
 //    this.currentPosition = new L.LatLng(48.743,-3.40);;
 //    this.currentPosition = new L.LatLng(48.740707649141,-3.4593216011262); // exact
+    this.currentPosition = new L.LatLng(48.729044145254,-3.4635955095291); // exact
 //    this.currentPosition = new L.LatLng(48.727927744892,-3.4603740193799); // 10m
 
     this.waypoints = [];
@@ -406,8 +407,6 @@ MapManager.prototype.addPoi = function(poi) {
     this.poiMap.set(0, newPoi);
 	// only one POI -> my assigned poi
 
-	console.log(poi.longitude);
-	console.log(poi.latitude);
 	document.getElementById("myPoiName").innerHTML = poi.name;
 	document.getElementById("mapLink").setAttribute("href","http://maps.apple.com/maps?q="+poi.latitude+","+poi.longitude);
 	
@@ -438,9 +437,9 @@ MapManager.prototype.updateCurrentPosition = function(latLng) {
 
 MapManager.prototype.getDistanceToPoi = function() {
 	var checkins = {};
-//	if (localStorage.checkins!=undefined) {
-//		checkins = JSON.parse(localStorage.checkins);
-//	}
+	if (localStorage.checkins!=undefined) {
+		checkins = JSON.parse(localStorage.checkins);
+	}
 	if (this.poiMap.get(0) != undefined && this.currentPosition!=null) {
 		var d = Math.round(this.poiMap.get(0).marker.getLatLng().distanceTo(this.currentPosition));
 		if (checkins[raidID] == true) {
@@ -452,7 +451,7 @@ MapManager.prototype.getDistanceToPoi = function() {
 		}
 		return d;
 	} else {
-		console.log('NO POSITION DETECTED');
+		console.log('No position detected');
 		return null;
 	}
 }

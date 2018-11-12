@@ -90,13 +90,11 @@ var checkin = function() {
 				var checkins = JSON.parse(localStorage.checkins);
 				checkins[raidID] = true;
 				localStorage.checkins = JSON.stringify(checkins);
-				console.log(response.code);
 			} else {
 				showBottom("Aucune connexion");
-				console.log(response.code);
 			}
 		};
-		apiCall("GET",'helper/raid/'+raidID+'/check-in',null, r);
+		apiCall("PUT",'helper/raid/'+raidID+'/check-in',null, r);
 	} else {
 		showBottom("Aucune connexion");
 		document.getElementById('checkInButton').classList.add('checkin--validated');
