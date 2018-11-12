@@ -18,20 +18,7 @@ var app = {
 	},
     // Update DOM on a Received Event
     receivedEvent: function(id) {
-		console.log("Device is ready");
-		console.log("Raids");
 		var b = check_authentification();
-		
-		if(cordova.plugins.backgroundMode != undefined){
-            cordova.plugins.backgroundMode.configure({
-                color: '#0f5e54',
-                text: 'Tâche en cours',
-                resume: 'Raidy Helper vous guide vers votre POI'
-            });
-            cordova.plugins.backgroundMode.on('activate', function() {
-                cordova.plugins.backgroundMode.disableWebViewOptimizations();
-            });
-        }
 
         initForm();
         main();

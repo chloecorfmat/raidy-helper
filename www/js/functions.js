@@ -61,3 +61,49 @@ function setIDintoTabs() {
 	}
 	return id;
 }
+
+function showToast(message) {
+	// one toast at a time
+	if (document.getElementsByClassName('toast--container').length == 0) {
+		var body = document.getElementsByTagName("body");
+		var e = document.createElement('div');
+		e.classList.add('toast--container')
+		e.innerHTML = '<p class="toast--message">'+message+'</p>';
+		body[0].append(e);
+
+		// self destruct
+		setTimeout(function() {
+			e.classList.add('toast--disapear');
+		}, 2000);
+		setTimeout(function() {
+			body[0].removeChild(e);
+		}, 3500);
+	}
+}
+
+var checkin = function() {
+  var online = localStorage.getItem('online');
+	if (online == 'true' || online == "true") {
+		var r = function(response, http_code) {
+			var response_json = JSON.parse(response);
+			if (http_code==200) {
+				document.getElementById('checkInButton').classList.add('checkin--validated');
+				document.getElementById('checkInButton').innerHTML = 'Position validée';
+				document.getElementById('checkInButton').removeEventListener("click", checkin);
+				var checkins = JSON.parse(localStorage.checkins);
+				checkins[raidID] = true;
+				localStorage.checkins = JSON.stringify(checkins);
+			} else if (http_code==403) {
+				console.log(response.message);
+				if (response.message=="Bad day") {
+					showToast("Ce raid n'a pas lieu aujourd'hui")
+				}
+			} else {
+				showToast("Échec de la validation");
+			}
+		};
+		apiCall("PUT",'helper/raid/'+raidID+'/check-in',null, r);
+	} else {
+		showToast("Aucune connexion");
+	}
+}

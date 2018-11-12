@@ -28,7 +28,6 @@ Poi.prototype.toJSON = function(){
 Poi.prototype.fromObj = function(poi) {
     var keepThis = this;
 
-    // console.log(poi);
     this.id = poi.id;
     this.name = poi.name;
     this.poiType = mapManager.poiTypesMap.get(poi.poiType);

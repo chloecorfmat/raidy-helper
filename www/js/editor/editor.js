@@ -18,8 +18,6 @@ var app = {
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
-        console.log("Device is ready");
-        console.log("EDITOR");
         var b = check_authentification();
 
         if(cordova.plugins.backgroundMode != undefined){

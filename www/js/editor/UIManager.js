@@ -15,16 +15,19 @@ UIManager.prototype.resetAddPOIPopin = function(distance) {
 }
 
 UIManager.prototype.displayCheckinOutZone = function() {
-	document.getElementById('checkInButton').classList.add('checkin--out--zone');
+	document.getElementById('checkInButton').classList.remove('checkin--in--zone');
 	document.getElementById('checkInButton').innerHTML = 'Hors Zone';
+	document.getElementById('checkInButton').removeEventListener("click", checkin);
 }
 UIManager.prototype.displayCheckinInZone = function() {
-	document.getElementById('checkInButton').classList.remove('checkin--out--zone');
+	document.getElementById('checkInButton').classList.add('checkin--in--zone');
 	document.getElementById('checkInButton').innerHTML = 'Valider ma position';
+	document.getElementById('checkInButton').addEventListener("click", checkin);
 }
 UIManager.prototype.displayCheckInPoi = function() {
 	document.getElementById('checkInButton').classList.add('checkin--validated');
 	document.getElementById('checkInButton').innerHTML = 'Position validée';
+	document.getElementById('checkInButton').removeEventListener("click", checkin);
 }
 
 UIManager.prototype.showCheckInBox = function() {
@@ -34,7 +37,12 @@ UIManager.prototype.hideCheckInBox = function() {
 	document.getElementById('checkInBox').classList.remove("checkInBox--visible")
 }
 UIManager.prototype.updatePoiDistance = function(distance) {
-  if (distance !=null) {
-    document.getElementById('myPoiDistance').innerHTML = distance + "m";
-  }
+	if (distance !=null) {
+		if (distance.toString().length >=4) {
+			distance = distance/1000 + "k";
+		}
+		document.getElementById('myPoiDistance').innerHTML = distance + "m";
+	} else {
+		document.getElementById('checkInButton').innerHTML = 'Géolocalisation impossible';
+	}
 }

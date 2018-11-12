@@ -45,8 +45,6 @@ var app = {
 	},
     // Update DOM on a Received Event
     receivedEvent: function(id) {
-		console.log("Device is ready");
-		console.log("CONNECTION");
         initForm();
 		main()
     }
@@ -80,9 +78,9 @@ function submitConnection(e) {
 			localStorage.setItem('isAuthenticated', 'true');
 			localStorage.setItem('token', response.token);
 			localStorage.setItem('name', email.value);
+			localStorage.setItem('online', true);
 			window.location.replace("home.html");
 		} else {
-			console.log(response.code);
 			var msgBox = document.getElementById('form-error');
 			if (response.message == "Bad credentials") {
 				msgBox.innerHTML = "Identifiants invalides";

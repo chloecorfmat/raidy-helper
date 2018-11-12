@@ -73,8 +73,6 @@ function main() {
 
 				show_raids_into_list(response_json)
 
-			} else {
-				console.log(response.code);
 			}
 		};
 		apiCall("GET",'helper/raid',null, r);
