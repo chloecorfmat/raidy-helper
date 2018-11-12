@@ -45,8 +45,6 @@ var app = {
 	},
     // Update DOM on a Received Event
     receivedEvent: function(id) {
-		console.log("Device is ready");
-		console.log("Raids");
 		var b = check_authentification();
         main();
     }
@@ -57,7 +55,6 @@ function main() {
 	disconnection.addEventListener("click", disconnect);
 	
 	var raidID = setIDintoTabs();
-	console.log()
 	
 	var info = localStorage.getItem('info-'+raidID);
 
@@ -69,7 +66,6 @@ function main() {
 	}
 	
 	var online = localStorage.getItem('online');
-	console.log(online);
 	if (online == 'true' || online == true) {
 		document.getElementById('connection-error').innerHTML = "";
 		var r = function(response, http_code) {
@@ -79,11 +75,6 @@ function main() {
 				var name = localStorage.getItem('name');
 				
 				show_info(response_json);
-				console.log(response);
-				
-			} else {
-				console.log(response.message);
-				console.log(response.code);
 			}
 		};
 

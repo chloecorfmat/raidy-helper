@@ -45,8 +45,6 @@ var app = {
 	},
     // Update DOM on a Received Event
     receivedEvent: function(id) {
-		console.log("Device is ready");
-		console.log("INDEX");
         var b = check_authentification();
 		if (b) window.location.replace("home.html");
     }

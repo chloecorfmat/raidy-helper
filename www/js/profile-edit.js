@@ -45,8 +45,6 @@ var app = {
 	},
     // Update DOM on a Received Event
     receivedEvent: function(id) {
-		console.log("Device is ready");
-		console.log("HOME");
 		var b = check_authentification();
         main();
     }
@@ -62,7 +60,6 @@ function main() {
 	});
 	
 	var profile = localStorage.getItem('profile');
-	console.log(profile);
 	if (profile==null) {
 		document.getElementById('connection-error').innerHTML = "Profil indisponible sans internet";
 	} else {
@@ -71,7 +68,6 @@ function main() {
 	}
 	
 	var online = localStorage.getItem('online');
-	console.log(online);
 	if (online == 'true' || online == true) {
 		document.getElementById('connection-error').innerHTML = "";
 		var r = function(response, http_code) {
@@ -81,11 +77,6 @@ function main() {
 				var name = localStorage.getItem('name');
 				
 				show_profile(response_json);
-				console.log(response);
-				
-			} else {
-				console.log(response.message);
-				console.log(response.code);
 			}
 		};
 
@@ -103,7 +94,6 @@ function submitForm() {
 	var lastname = document.getElementById('lastname').value;
 
 	var data = {username:email, email: email, phone: phone, lastname: lastname, firstname: firstname};
-	console.log(data);
 	var r = function(response, http_code) {
 		response = JSON.parse(response);
 		if (http_code==200) {
@@ -111,7 +101,6 @@ function submitForm() {
 			localStorage.setItem('name', email.value);
 			window.location.replace("profile.html");
 		} else {
-			console.log(response.code);
 			var msgBox = document.getElementById('form-error');
 			if (response.message == "Bad credentials") {
 				msgBox.innerHTML = "Identifiants invalides";

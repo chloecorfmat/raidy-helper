@@ -45,8 +45,6 @@ var app = {
 	},
 	// Update DOM on a Received Event
 	receivedEvent: function (id) {
-		console.log("Device is ready");
-		console.log("Raids");
 		var b = check_authentification();
 		main();
 	}
@@ -69,17 +67,12 @@ function main() {
 
 	//refresh if online
 	var online = localStorage.getItem('online');
-	console.log(online);
 	if (online == 'true' || online == true) {
 		var r = function (response, http_code) {
 			var response_json = JSON.parse(response);
 			if (http_code == 200) {
 				localStorage.setItem('contacts-'+raidID, response);
-
 				show_contacts_into_list(response_json)
-
-			} else {
-				console.log(response.code);
 			}
 		};
 		apiCall("GET", 'helper/raid/' + raidID + '/contact', null, r);
@@ -93,7 +86,6 @@ function show_contacts_into_list(response_json) {
 
 	for (var i = 0; i < response_json.length; i = i + 1) {
 		var contact = response_json[i];
-		console.log(contact);
 
 		var e = document.createElement('div');
 		e.innerHTML = '<div class="contacts--list-items">' +
