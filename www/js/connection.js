@@ -45,7 +45,49 @@ var app = {
 	},
     // Update DOM on a Received Event
     receivedEvent: function(id) {
-        var b = check_authentification();
-		if (b) window.location.replace("home.html");
+        initForm();
+		main()
     }
 };
+
+function main() {
+	var form = document.getElementsByTagName('form');
+	form = form[0];
+	form.addEventListener('submit', function(e) {
+		e.preventDefault();
+		submitConnection();
+		return false;
+	});
+	
+	var online = localStorage.getItem('online');
+	var msgBox = document.getElementById('form-error');
+	if (online == 'false' || online == false) {
+		msgBox.innerHTML = "Connexion impossible sans internet";
+	}
+}
+
+function submitConnection(e) {
+	var email = document.getElementById('email');
+	var pwd = document.getElementById('password');
+
+	var data = {email: email.value, password: pwd.value};
+	
+	var r = function(response, http_code) {
+		response = JSON.parse(response);
+		if (http_code==200) {
+			localStorage.setItem('isAuthenticated', 'true');
+			localStorage.setItem('token', response.token);
+			localStorage.setItem('name', email.value);
+			localStorage.setItem('online', true);
+			window.location.replace("home.html");
+		} else {
+			var msgBox = document.getElementById('form-error');
+			if (response.message == "Bad credentials") {
+				msgBox.innerHTML = "Identifiants invalides";
+			} else {
+				msgBox.innerHTML = response.message;
+			}
+		}
+	};
+	apiCall("POST",'auth-tokens',data, r);
+}

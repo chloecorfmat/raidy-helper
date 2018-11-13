@@ -37,19 +37,43 @@
     * Create your own at http://cspisawesome.com
     -->
     <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+
     <link rel="stylesheet" type="text/css" href="dist/css/styles.css" />
-    <title>Raidy</title>
+    <title>Raidy | Connexion</title>
 </head>
 
-<body>
-    <div class="app">
-        <p>Loading...</p>
+<body class="helper login">
+    <main class="app">
+		<a href="." class="logo">
+			<img src="img/logo-color@0.5x.png" alt="Logo Raidy">
+		</a>
 
-    </div>
+		<div class="login-information"></div>
+        <p class="form--error" id="form-error"></p>
+
+	<form>
+		<div id="form">
+			<div class="form--item">
+				<label for="email">E-mail</label>
+				<input type="email" id="email" name="_email" value="" required="required" autocomplete="email" class="form--input-email"/>
+			</div>
+
+			<div class="form--item">
+				<label for="password">Mot de passe</label>
+				<input type="password" id="password" name="_password" required="required" autocomplete="current-password" class="form--input-password" />
+			</div>
+			<div class="form--item-submit">
+				<input type="submit" id="_submit" name="_submit" value="Connexion" class="btn" id="form_submit" />
+			</div>
+		</div>
+	</form>
+
+    </main>
     <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/forms-style.js"></script>
     <script type="text/javascript" src="js/variables.js"></script>
     <script type="text/javascript" src="js/functions.js"></script>
-    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="js/connection.js"></script>
     <script type="text/javascript">
         app.initialize();
     </script>

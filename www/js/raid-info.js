@@ -45,7 +45,54 @@ var app = {
 	},
     // Update DOM on a Received Event
     receivedEvent: function(id) {
-        var b = check_authentification();
-		if (b) window.location.replace("home.html");
+		var b = check_authentification();
+        main();
     }
 };
+
+function main() {
+	var disconnection = document.getElementById("disconnect");
+	disconnection.addEventListener("click", disconnect);
+	
+	var raidID = setIDintoTabs();
+	
+	var info = localStorage.getItem('info-'+raidID);
+
+	if (info==null) {
+		document.getElementById('connection-error').innerHTML = "informations indisponibles sans internet";
+	} else {
+		var info_json = JSON.parse(info);
+		show_info(info_json);
+	}
+	
+	var online = localStorage.getItem('online');
+	if (online == 'true' || online == true) {
+		document.getElementById('connection-error').innerHTML = "";
+		var r = function(response, http_code) {
+			response_json = JSON.parse(response);
+			if (http_code==200) {
+				localStorage.setItem('info-'+raidID, response);
+				var name = localStorage.getItem('name');
+				
+				show_info(response_json);
+			}
+		};
+
+		apiCall('GET','helper/raid/'+raidID,null,r);
+	}
+}
+
+function show_info(response) {
+	
+	var date = new Date(response.date.date);
+	var month = date.getMonth()+1;
+	date = date.getDate() +"/"+ month +"/"+ date.getFullYear();
+	
+	document.getElementById('name').innerHTML = response.name;
+	document.getElementById('date').innerHTML = date;
+	document.getElementById('address').innerHTML = response.address;
+	document.getElementById('addressAddition').innerHTML = response.addressAddition;
+	document.getElementById('postCode').innerHTML = response.postCode;
+	document.getElementById('city').innerHTML = response.city;
+	document.getElementById('editionNumber').innerHTML = response.editionNumber;
+}
