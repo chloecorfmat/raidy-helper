@@ -93,9 +93,9 @@ var checkin = function() {
 				var checkins = JSON.parse(localStorage.checkins);
 				checkins[raidID] = true;
 				localStorage.checkins = JSON.stringify(checkins);
-			} else if (http_code==403) {
+			} else if (http_code==400) {
 				console.log(response.message);
-				if (response.message=="Bad day") {
+				if (response.message=="You can not check in for this raid today") {
 					showToast("Ce raid n'a pas lieu aujourd'hui")
 				}
 			} else {
