@@ -24,7 +24,10 @@ $live-color: $secondary-color-2;
 
 @font-face {
   font-family: 'Proxima Nova';
-  src: url('../../res/fonts/proxima-nova.ttf') format('truetype');
+  src: url('../../res/fonts/proxima-nova.ttf') format('truetype'),
+  url('../../res/fonts/Proxima Nova Alt Regular-webfont.eot') format('embedded-opentype'),
+  url('../../res/fonts/Proxima Nova Alt Regular-webfont.woff') format('woff'),
+  url('../../res/fonts/Proxima Nova Alt Regular-webfont.svg') format('svg');
 }
 
 // BREAKPOINTS.
