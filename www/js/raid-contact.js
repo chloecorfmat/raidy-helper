@@ -59,7 +59,7 @@ function main() {
 	// show contacts
 	var contacts = localStorage.getItem('contacts-'+raidID);
 	if (contacts == null) {
-		document.getElementById('connection-error').innerHTML = "Liste des contacts indisponible sans internet";
+		document.getElementById('connection-error').innerHTML = "Liste des contacts indisponible";
 	} else {
 		var contacts_json = JSON.parse(contacts);
 		show_contacts_into_list(contacts_json);
@@ -70,6 +70,7 @@ function main() {
 	if (online == 'true' || online == true) {
 		var r = function (response, http_code) {
 			var response_json = JSON.parse(response);
+			console.log(http_code);
 			if (http_code == 200) {
 				localStorage.setItem('contacts-'+raidID, response);
 				show_contacts_into_list(response_json)
@@ -82,29 +83,34 @@ function main() {
 
 function show_contacts_into_list(response_json) {
 	var contacts = document.getElementById("contacts--list");
-	contacts.innerHTML = "<h1>Contacts</h1>"; // clear div
+	contacts.innerHTML = ""; // clear div
 
 	for (var i = 0; i < response_json.length; i = i + 1) {
 		var contact = response_json[i];
 
+		var name = "";
+		if (contact.user != undefined) {
+			name = contact.user.firstname.charAt(0).toUpperCase() + " " + contact.user.lastname.toUpperCase();
+		}
 		var e = document.createElement('div');
 		e.innerHTML = '<div class="contacts--list-items">' +
 			'<div class="contact" id="contact-' + contact.id + '">' +
 			'<div class="contact--content-container">' +
-			'<p class="contact--title">' + contact.title + '</p>' +
-			'<p class="contact--name">' + contact.name + '</p>' +
+			'<p class="contact--title">' + contact.role + '</p>' +
+			'<p class="contact--name">' + name + '</p>' +
 			'</div>' +
 			'<div class="contact--content-icons">' +
-			'<a href="tel:' + contact.phone + '"><img src="img/icon-phone.svg" /></a>' +
-			'<a href="sms:' + contact.phone + '"><img src="img/icon-message.svg" /></a>' +
+			'<a href="tel:' + contact.phoneNumber + '"><img src="img/icon-phone.svg" /></a>' +
+			'<a href="sms:' + contact.phoneNumber + '"><img src="img/icon-message.svg" /></a>' +
 			'</div>' +
 			'</div>' +
 			'</div>';
 
 		contacts.append(e);
 		var online = localStorage.getItem('online');
-		if (online == 'true' || online == true) {
-			document.getElementById('contact-' + contact.id).style.backgroundImage = 'url("' + contact.picture + '")';
-		}
+	}
+	
+	if (response_json.length == 0) {
+		document.getElementById('connection-error').innerHTML = "Aucun contact";
 	}
 }
