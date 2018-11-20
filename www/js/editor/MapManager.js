@@ -93,7 +93,6 @@ var MapManager = function(uimanager) {
     baseLayer.on('savestart', function(e) {
         progress = 0;
         tilesToSave = e._tilesforSave.length;
-        console.log("Start downloading " + e._tilesforSave.length + " tiles");
     });
 
     baseLayer.on('savetileend', function(e) {
@@ -106,7 +105,6 @@ var MapManager = function(uimanager) {
         }
 
         keepThis.UIManager.setMapDownloadStatus(message);
-        console.log(progress + " tiles downloaded");
     });
 
     baseLayer.on('loadend', function(e) {
@@ -138,7 +136,6 @@ var MapManager = function(uimanager) {
         'zoomlevels': [16],
         'position': 'topright',
         'confirm': function(layer, succescallback) {
-            console.log("download " + layer._tilesforSave.length + " tiles");
             keepThis.UIManager.displayMapDownloadBar();
             succescallback();
         },
@@ -156,7 +153,6 @@ MapManager.prototype.initialize = function() {
     var keepThis = this;
 
     this.map.addEventListener('click', function(e) {
-        // console.log("Mode : "+EditorMode.properties[keepThis.mode].name);
         switch (keepThis.mode) {
             case EditorMode.READING:
                 break;
@@ -227,7 +223,6 @@ MapManager.prototype.loadRessources = function() {
     var keepThis = this;
     return new Promise(function(resolve, reject) {
         if (localStorage.online == "true") {
-            console.log("Load poiTypes from server");
             apiCall('GET', "helper/raid/"+ raidID + "/poitype", null, function(responseText, status) {
                 if (status === 200) {
                     localPoiTypes = JSON.parse(localStorage.poiTypes);
@@ -268,7 +263,6 @@ MapManager.prototype.addTrack = function(track) {
 MapManager.prototype.loadTracks = function() {
     return new Promise(function(resolve, reject){
         if (localStorage.online == "true") {
-            console.log("Load tracks from server");
             apiCall('GET', "helper/raid/" + raidID + "/track", null, function(responseText, status) {
                 if (status === 200) {
                     var tracks = JSON.parse(responseText);
@@ -294,11 +288,9 @@ MapManager.prototype.loadTracks = function() {
                 }
             });
         } else {
-            console.log("load tracks from localStorage");
             var allTracks = JSON.parse(localStorage.tracks)[raidID];
 
             if (allTracks == undefined) {
-                console.error('This raid is not saved on localStorage');
                 reject();
             }
 
@@ -324,7 +316,6 @@ MapManager.prototype.loadPois = function() {
 
 	return new Promise(function(resolve, reject) {
 		if (localStorage.online == "true") {
-		    console.log("Load Pois from server");
 		    apiCall('GET', "helper/raid/" + raidID + "/poi", null, function(responseText, status) {
 		        if (status === 200) {
 		            var poi = JSON.parse(responseText);
@@ -348,11 +339,9 @@ MapManager.prototype.loadPois = function() {
 
 		    });
 		} else {
-		    console.log("Load Pois from local");
 
 		    var allPois = JSON.parse(localStorage.pois)[raidID];
 		    if (allPois == undefined) {
-		        console.error('This raid is not saved on localStorage');
 		        return;
 		    }
 
@@ -448,7 +437,6 @@ MapManager.prototype.getDistanceToPoi = function() {
 		}
 		return d;
 	} else {
-		console.log('No position detected');
 		return null;
 	}
 }

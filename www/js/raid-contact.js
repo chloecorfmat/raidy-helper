@@ -70,7 +70,6 @@ function main() {
 	if (online == 'true' || online == true) {
 		var r = function (response, http_code) {
 			var response_json = JSON.parse(response);
-			console.log(http_code);
 			if (http_code == 200) {
 				localStorage.setItem('contacts-'+raidID, response);
 				show_contacts_into_list(response_json)
