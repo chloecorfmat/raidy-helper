@@ -10,10 +10,6 @@ const cleanCSS = require('gulp-clean-css');
 
 // Linter.
 gulp.task('lint', function() {
-    gulp.src('./www/js/*.js')
-        //.pipe(esLint())
-        //.pipe(esLint.format())
-        //.pipe(esLint.failAfterError());
 
     gulp.src('./www/scss/**/*.scss')
         .pipe(sassLint())
@@ -45,6 +41,6 @@ gulp.task('default', ['lint', 'styles'], function() {
 });
 
 gulp.task('watch', function () {
-    gulp.watch(['./www/scss/**/*.scss', './www/js/**/*.js'], ['lint']);
+    gulp.watch('./www/scss/**/*.scss', ['lint']);
     gulp.watch('./www/scss/**/*.scss', ['styles']);
 });
