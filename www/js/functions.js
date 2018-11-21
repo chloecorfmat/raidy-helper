@@ -97,6 +97,9 @@ var checkin = function() {
 				if (response.message=="You can not check in for this raid today") {
 					showToast("Ce raid n'a pas lieu aujourd'hui")
 				}
+				if (response.message=="You have already checked in for this raid") {
+					showToast("Vous avez déjà validé votre position")
+				}
 			} else {
 				showToast("Échec de la validation");
 			}
