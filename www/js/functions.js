@@ -94,10 +94,10 @@ var checkin = function() {
 				checkins[raidID] = true;
 				localStorage.checkins = JSON.stringify(checkins);
 			} else if (http_code==400) {
-				if (response.message=="You can not check in for this raid today") {
+				if (response_json.message=="You can not check in for this raid today") {
 					showToast("Ce raid n'a pas lieu aujourd'hui")
 				}
-				if (response.message=="You have already checked in for this raid") {
+				if (response_json.message=="You have already checked in for this raid") {
 					showToast("Vous avez déjà validé votre position")
 				}
 			} else {
