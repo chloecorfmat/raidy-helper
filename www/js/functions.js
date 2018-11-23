@@ -100,6 +100,9 @@ var checkin = function() {
 				if (response_json.message=="You have already checked in for this raid") {
 					showToast("Vous avez déjà validé votre position")
 				}
+				if (response_json.message=="Out of zone") {
+					showToast("Vous n'êtes pas à proximité du poste")
+				}
 			} else {
 				showToast("Échec de la validation");
 			}

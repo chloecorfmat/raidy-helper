@@ -70,7 +70,6 @@ var MapManager = function(uimanager) {
     this.newPoiPosition = null;
 
     this.currentPosition = null;
-//    this.currentPosition = new L.LatLng(48.743,-3.40);;
 
     this.waypoints = [];
 
