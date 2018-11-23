@@ -107,7 +107,10 @@ var checkin = function() {
 				showToast("Échec de la validation");
 			}
 		};
-		apiCall("PUT",'helper/raid/'+raidID+'/check-in',null, r);
+		
+		var data = {lat: mapManager.currentPosition.lat, lng: mapManager.currentPosition.lng};
+		
+		apiCall("PUT",'helper/raid/'+raidID+'/check-in',data, r);
 	} else {
 		showToast("Aucune connexion");
 	}
