@@ -94,14 +94,23 @@ var checkin = function() {
 				checkins[raidID] = true;
 				localStorage.checkins = JSON.stringify(checkins);
 			} else if (http_code==400) {
-				if (response.message=="You can not check in for this raid today") {
+				if (response_json.message=="You can not check in for this raid today") {
 					showToast("Ce raid n'a pas lieu aujourd'hui")
+				}
+				if (response_json.message=="You have already checked in for this raid") {
+					showToast("Vous avez déjà validé votre position")
+				}
+				if (response_json.message=="Out of zone") {
+					showToast("Vous n'êtes pas à proximité du poste")
 				}
 			} else {
 				showToast("Échec de la validation");
 			}
 		};
-		apiCall("PUT",'helper/raid/'+raidID+'/check-in',null, r);
+		
+		var data = {lat: mapManager.currentPosition.lat, lng: mapManager.currentPosition.lng};
+		
+		apiCall("PUT",'helper/raid/'+raidID+'/check-in',data, r);
 	} else {
 		showToast("Aucune connexion");
 	}

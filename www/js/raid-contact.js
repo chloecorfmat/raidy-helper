@@ -83,6 +83,7 @@ function main() {
 function show_contacts_into_list(response_json) {
 	var contacts = document.getElementById("contacts--list");
 	contacts.innerHTML = ""; // clear div
+	document.getElementById('connection-error').innerHTML = ""
 
 	for (var i = 0; i < response_json.length; i = i + 1) {
 		var contact = response_json[i];
