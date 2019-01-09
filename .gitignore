@@ -5,3 +5,5 @@ platforms/*
 plugins/
 www/js/variables\.js
 platforms/browser/www/js/variables\.js
+
+.idea*
