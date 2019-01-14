@@ -53,20 +53,19 @@
   }
 }
 
-
-.statusBar {
+.statusBar { //sass-lint:disable-line class-name-format
   color: $white;
   display: none;
   flex-direction: row;
   font-family: 'Proxima Nova', 'SansSerif';
   padding: 8px 0;
 
-  &--visible {
+  &--visible { //sass-lint:disable-line class-name-format
     display: flex;
   }
 }
 
-#recordStatusBar {
+#recordStatusBar { //sass-lint:disable-line no-ids
   background: $secondary-color-2;
 
   & > div {
@@ -75,7 +74,7 @@
   }
 }
 
-#downloadStatusBar {
+#downloadStatusBar { //sass-lint:disable-line no-ids
   background: $theme-color-secondary;
   justify-content: center;
   text-align: center;
@@ -107,12 +106,10 @@
     display: none;
 
     &:checked {
-      + .checkmark {
-        // sass-lint:disable-line nesting-depth
+      + .checkmark { //sass-lint:disable-line nesting-depth
         background-color: $tertiary-color-1; // Set color by js.
 
-        .fa-check {
-          // sass-lint:disable-line nesting-depth
+        .fa-check { //sass-lint:disable-line nesting-depth
           opacity: 1;
         }
       }
@@ -193,8 +190,8 @@
     }
   }
 }
-// LEAF LET POP-UP
 
+// LEAF LET POP-UP
 .leaflet-popup-content-wrapper {
   border-radius: 12px;
   padding: 0;
@@ -222,10 +219,10 @@
 
 
 // checkin button
-.checkInBox {
+.checkInBox { //sass-lint:disable-line class-name-format
   display: none;
 
-  &.checkInBox--visible {
+  &.checkInBox--visible { //sass-lint:disable-line class-name-format
     background-color: $white;
     bottom: 0;
     box-sizing: border-box;
@@ -238,7 +235,7 @@
     z-index: 1000;
 
 
-    .mapLink {
+    .mapLink { //sass-lint:disable-line class-name-format
       background-image: url('../../img/icon-pin.svg');
       background-position: center;
       background-repeat: no-repeat;
