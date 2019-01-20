@@ -89,9 +89,12 @@ function show_contacts_into_list(response_json) {
 		var contact = response_json[i];
 
 		var name = "";
-		if (contact.user != undefined) {
+		if (contact.user != undefined && contact.user != '') {
 			name = contact.user.firstname.charAt(0).toUpperCase() + " " + contact.user.lastname.toUpperCase();
+		} else {
+			name = '-';
 		}
+
 		var e = document.createElement('div');
 		e.innerHTML = '<div class="contacts--list-items">' +
 			'<div class="contact" id="contact-' + contact.id + '">' +
@@ -109,7 +112,7 @@ function show_contacts_into_list(response_json) {
 		contacts.append(e);
 		var online = localStorage.getItem('online');
 	}
-	
+
 	if (response_json.length == 0) {
 		document.getElementById('connection-error').innerHTML = "Aucun contact";
 	}
