@@ -58,7 +58,7 @@ function main() {
 		submitForm();
 		return false;
 	});
-	
+
 	var profile = localStorage.getItem('profile');
 	if (profile==null) {
 		document.getElementById('connection-error').innerHTML = "Profil indisponible sans internet";
@@ -66,7 +66,7 @@ function main() {
 		var profile_json = JSON.parse(profile);
 		show_profile(profile_json);
 	}
-	
+
 	var online = localStorage.getItem('online');
 	if (online == 'true' || online == true) {
 		document.getElementById('connection-error').innerHTML = "";
@@ -75,7 +75,7 @@ function main() {
 			if (http_code==200) {
 				localStorage.setItem('profile', response);
 				var name = localStorage.getItem('name');
-				
+
 				show_profile(response_json);
 			}
 		};
@@ -99,7 +99,8 @@ function submitForm() {
 		if (http_code==200) {
 			localStorage.setItem('profile', JSON.stringify(data));
 			localStorage.setItem('name', email.value);
-			window.location.replace("profile.html");
+            showToast("Votre profil a bien été mis à jour.");
+			//window.location.replace("profile.html");
 		} else {
 			var msgBox = document.getElementById('form-error');
 			if (response.message == "Bad credentials") {
@@ -117,6 +118,6 @@ function show_profile(response) {
 	document.getElementById('lastname').value = response.lastname;
 	document.getElementById('phone').value = response.phone;
 	document.getElementById('email').value = response.email;
-	
+
 	initForm();
 }

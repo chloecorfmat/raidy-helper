@@ -92,6 +92,7 @@ function show_info(response) {
         document.getElementById('name').innerHTML = response.name;
         document.getElementById('date').innerHTML = date;
         document.getElementById('address').innerHTML = response.address;
+
         document.getElementById('addressAddition').innerHTML = response.addressAddition;
         document.getElementById('postCode').innerHTML = response.postCode;
         document.getElementById('city').innerHTML = response.city;
@@ -125,8 +126,6 @@ function show_info(response) {
             messageContainer.appendChild(messageContent);
 
             container.appendChild(messageContainer);
-
-
         }
 	}
 
