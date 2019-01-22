@@ -1,0 +1,46 @@
+.message {
+  border: 1px solid;
+  border-radius: 5px;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  padding: 0 .5rem;
+  position: relative;
+
+  &:first-child {
+    margin-top: 1.5rem;
+  }
+
+  .message-datetime {
+    font-weight: 700;
+  }
+}
+
+.message--danger {
+  background: $secondary-color-2-light;
+  border-color: $secondary-color-2;
+  color: $secondary-color-2;
+
+  .message-icon {
+    color: $secondary-color-2;
+  }
+}
+
+.message--success {
+  background: $tertiary-color-1-light;
+  border-color: $tertiary-color-1;
+  color: $tertiary-color-1;
+
+  .message-icon {
+    color: $tertiary-color-1;
+  }
+}
+
+.message--info {
+  background: $secondary-color-1-light;
+  border-color: $secondary-color-1;
+  color: $secondary-color-1;
+
+  .message-icon {
+    color: $secondary-color-1;
+  }
+}
