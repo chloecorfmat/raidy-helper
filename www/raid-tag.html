@@ -58,27 +58,18 @@
 		<main class="main--full">
 			<nav class="nav--tab">
 				<ul>
-					<li class="tab--active"><button>Informations</button></li>
+					<li><a href="raid-info.html" aria-label="Informations"><button>Informations</button></a></li>
 					<li><a href="raid-helper.html" aria-label="Bénévolat"><button>Bénévolat</button></a></li>
 					<li><a href="raid-contact.html" aria-label="Contacts"><button>Contacts</button></a></li>
-					<li><a href="raid-tag.html" aria-label="Badge"><button>Badges</button></a></li>
+					<li class="tab--active"><button>Badges</button></li>
 				</ul>
 			</nav>
 			<div class="tab--content">
-				<div class="info--list profile" id="info--list">
-					<div class="messages" id="messages--container">
-					</div>
-					<h1>Informations</h1>
-					<p class="form--error" id="connection-error"></p>
-					<div class="profile--contact-information">
-						<p>Nom du raid : <span id="name"></span></p>
-						<p>Date du raid : <span id="date"></span></p>
-						<p>Adresse : <span id="address"></span></p>
-						<p>Complément d'adresse : <span id="addressAddition"></span></p>
-						<p>Code postal : <span id="postCode"></span></p>
-						<p>Ville : <span id="city"></span></p>
-						<p>Numéro d'édition : <span id="editionNumber"></span></p>
-					</div>
+				<h1>Badges</h1>
+				<button>Badger pendant le raid</button>
+				<h1>Participants</h1>
+				<p class="form--error" id="connection-error"></p>
+				<div class="competitor--list" id="competitor--list">
 				</div>
 			</div>
 		</main>
@@ -86,7 +77,7 @@
 	<script type="text/javascript" src="cordova.js"></script>
 	<script type="text/javascript" src="js/variables.js"></script>
 	<script type="text/javascript" src="js/functions.js"></script>
-	<script type="text/javascript" src="js/raid-info.js"></script>
+	<script type="text/javascript" src="js/raid-tag.js"></script>
 	<script type="text/javascript">
 		app.initialize();
 	</script>
