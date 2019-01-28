@@ -88,16 +88,16 @@ function show_competitors_into_list(response_json) {
 	for (var i = 0; i < response_json.length; i = i + 1) {
 		var competitor = response_json[i];
 
-		
-		var name = competitor.firstname.charAt(0).toUpperCase() + " " + competitor.lastname.toUpperCase();
-
-
 		var e = document.createElement('div');
 		e.innerHTML = '<div class="competitors--list-items">' +
 			'<div class="competitor" id="competitor-' + competitor.id + '">' +
 			'<div class="competitor--content-container">' +
-			'<p class="competitor--title">' + competitor.numberSign + '</p>' +
-			'<p class="competitor--name">' + name + '</p>' +
+			'<p class="competitor--title">' + competitor.firstname + " " + competitor.lastname.toUpperCase() + '</p>' +
+			'<p class="competitor--name">Epreuve : '+ competitor.race.name +'</p>' +
+			'<p class="competitor--name">Dossard : ' + competitor.number_sign  + ', Année : ' + competitor.birthyear  + ', Sexe : '+ competitor.sex +'</p>' +
+			'</div>' +
+			'<div class="competitor--content-icons">' +
+			'<button class="associate" data-competitor-id="'+competitor.id+'" data-race-id="'+competitor.race.id+'">Associer</button>' +
 			'</div>' +
 			'</div>' +
 			'</div>';
