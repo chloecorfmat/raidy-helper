@@ -57,5 +57,9 @@
 
   .associate {
     margin: auto;
+
+    &.association-active {
+      background-color: $secondary-color-2;
+    }
   }
 }

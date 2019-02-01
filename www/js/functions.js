@@ -63,6 +63,7 @@ function setIDintoTabs() {
 }
 
 function showToast(message) {
+  console.log(message);
 	// one toast at a time
 	if (document.getElementsByClassName('toast--container').length == 0) {
 		var body = document.getElementsByTagName("body");
@@ -114,4 +115,42 @@ var checkin = function() {
 	} else {
 		showToast("Aucune connexion");
 	}
+}
+
+
+function associate_competitor(message, competitor, race, raid) {
+	showToast("NFC read");
+	console.log(message);
+	var data = {NFCSerialId:""};
+	var r = function(response, http_code) {
+		response = JSON.parse(response);
+		if (http_code==200) {
+			console.log(response);
+				nfc.removeNdefListener();
+			
+			if (writeNFC(message)) {
+				var icon_container = document.querySelector('#competitor-' + competitor+'-'+race+' .competitor--content-icons');
+				var active_button = document.getElementsByClassName("association-active")[0];
+				icon_container.removeChild(active_button);
+				icon_container.innerHTML = '<img src="img/icon-check.svg" />';
+			} else {
+				showToast("Echec d'écriture sur la puce");
+			}
+		} else {
+			showToast("Echec de connexion avec le serveur");
+		}
+	};
+	apiCall("PATCH",'helper/raid/'+raid+'/race/'+race+'/competitor/'+competitor,data, r);
+}
+
+
+function writeNFC(msg) {
+//	var message = [
+//		ndef.textRecord(msg)
+//	];
+//	var success;
+//	
+//	nfc.write(message, function() {success = true}, function() {success = false});
+//	
+//	return success;
 }
