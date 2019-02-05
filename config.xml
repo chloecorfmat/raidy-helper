@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.sixteam_itw.helper" version="1.5.2" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
-    <name>Ready Helper</name>
+<widget id="com.sixteam_itw.helper" version="1.8.1" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+    <name>Raidy Helper</name>
     <description>
-        Ready helper
+        Raidy helper
     </description>
     <author email="contact.sixteam@gmail.com">
         Sixteam
@@ -10,7 +10,7 @@
     <content src="index.html" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="android-minSdkVersion" value="21" />
-    <preference name="android-targetSdkVersion" value="21" />
+    <preference name="android-targetSdkVersion" value="28" />
     <platform name="android">
         <icon qualifier="ldpi" src="www/res/icons/android/drawable-ldpi-icon.png" />
         <icon qualifier="mdpi" src="www/res/icons/android/drawable-mdpi-icon.png" />
@@ -87,5 +87,7 @@
     <plugin name="cordova-plugin-globalization" spec="^1.11.0" />
     <plugin name="cordova-plugin-network-information" spec="^2.0.1" />
     <plugin name="cordova-plugin-splashscreen" spec="^5.0.2" />
-    <plugin name="phonegap-nfc" spec="1.0.3" />
+    <plugin name="phonegap-nfc" source="git" spec="https://github.com/fredmaggiowski/phonegap-nfc" />
+    <plugin name="cordova-plugin-compat" spec="^1.2.0" />
+    <plugin name="cordova-plugin-file" spec="^6.0.1" />
 </widget>
