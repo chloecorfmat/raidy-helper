@@ -119,23 +119,30 @@ var checkin = function() {
 
 
 function associate_competitor(message, competitor, race, raid) {
-	showToast("NFC read");
-	console.log(message);
-	var data = {NFCSerialId:""};
+//	showToast("NFC read : "+message);
+	var data = {NFCSerialId:message};
 	var r = function(response, http_code) {
 		response = JSON.parse(response);
 		if (http_code==200) {
 			console.log(response);
-				nfc.removeNdefListener();
+			nfc.removeNdefListener();
 			
-			if (writeNFC(message)) {
-				var icon_container = document.querySelector('#competitor-' + competitor+'-'+race+' .competitor--content-icons');
-				var active_button = document.getElementsByClassName("association-active")[0];
-				icon_container.removeChild(active_button);
-				icon_container.innerHTML = '<img src="img/icon-check.svg" />';
-			} else {
-				showToast("Echec d'écriture sur la puce");
-			}
+			var message = [
+				ndef.textRecord(competitor)
+			];
+			
+			nfc.write(message,
+				function() {
+					var icon_container = document.querySelector('#competitor-' + competitor+'-'+race+' .competitor--content-icons');
+					var active_button = document.getElementsByClassName("association-active")[0];
+					icon_container.removeChild(active_button);
+					icon_container.innerHTML = '<img src="img/icon-check.svg" />';
+				},
+				function(error) {
+					showToast("Echec d'écriture sur la puce");
+					document.getElementById("tag-error").innerHTML= JSON.stringify(error);
+				}
+			);
 		} else {
 			showToast("Echec de connexion avec le serveur");
 		}
@@ -143,14 +150,20 @@ function associate_competitor(message, competitor, race, raid) {
 	apiCall("PATCH",'helper/raid/'+raid+'/race/'+race+'/competitor/'+competitor,data, r);
 }
 
-
-function writeNFC(msg) {
-//	var message = [
-//		ndef.textRecord(msg)
-//	];
-//	var success;
-//	
-//	nfc.write(message, function() {success = true}, function() {success = false});
-//	
-//	return success;
+function check_competitor(nfcid,checkpoint, raid) {
+	var d = new Date().toISOString().slice(0, 19).replace('T', ' ');
+	console.log(d);
+	var data = {"NFCSerialId":nfcid, "time":d, "poi_id":checkpoint};
+	var r = function(response, http_code) {
+		response = JSON.parse(response);
+		if (http_code==200) {
+			console.log(response);
+			showToast("Passage enregistré avec succès");
+			
+		} else {
+			showToast("Echec de connexion avec le serveur");
+		}
+	};
+	apiCall("PUT",'helper/raid/'+raid+'/racetiming',data, r);
 }
+

@@ -65,9 +65,20 @@
 				</ul>
 			</nav>
 			<div class="tab--content">
-				<h1>Badges</h1>
-				<button>Badger pendant le raid</button>
+				<h1 class="checkpoint" >Badges</h1>
+				<button class="checkpoint" id=check-with-nfc >Checker un badge</button>
+				
+				<form class="checkpoint form" id="form_numbersign">
+				<div class="form--input-focused">
+				    <label>Numéro de dossard</label>
+					<input type=text name=numbersign class=form--input-text required id=numbersign />
+				</div>
+                <button id=submitnumbersign >Checker</button>
+				</form>
 				<h1>Participants</h1>
+				<p id=tag-id></p>
+				<p id=tag-msg></p>
+				<p id=tag-error></p>
 				<p class="form--error" id="connection-error"></p>
 				<div class="competitors--list" id="competitors--list">
 				</div>

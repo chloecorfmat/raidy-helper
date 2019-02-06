@@ -13,6 +13,10 @@ form {
   input {
     box-sizing: border-box;
     width: 100%;
+
+    &#submitnumbersign {
+      width: auto;
+    }
   }
 
   button {
@@ -96,4 +100,18 @@ form {
   font-size: .8rem;
   font-style: italic;
   font-weight: 700;
+}
+
+.checkpoint {
+  display: none;
+
+  &.checkpoint-visible {
+    display: flex;
+  }
+}
+
+#check-with-nfc {
+  display: block;
+  margin-top: 1.5em;
+  width: 100%;
 }
