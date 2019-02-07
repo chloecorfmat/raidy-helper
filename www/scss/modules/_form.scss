@@ -107,11 +107,14 @@ form {
 
   &.checkpoint-visible {
     display: flex;
+
+    &.checkpoint-button {
+      display: block;
+    }
   }
 }
 
-#check-with-nfc {
-  display: block;
+.checkpoint-button {
   margin-top: 1.5em;
   width: 100%;
 }

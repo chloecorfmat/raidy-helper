@@ -87,7 +87,7 @@
     <plugin name="cordova-plugin-globalization" spec="^1.11.0" />
     <plugin name="cordova-plugin-network-information" spec="^2.0.1" />
     <plugin name="cordova-plugin-splashscreen" spec="^5.0.2" />
-    <plugin name="phonegap-nfc" source="git" spec="https://github.com/fredmaggiowski/phonegap-nfc" />
+    <plugin name="phonegap-nfc" spec="https://github.com/fredmaggiowski/phonegap-nfc" />
     <plugin name="cordova-plugin-compat" spec="^1.2.0" />
     <plugin name="cordova-plugin-file" spec="^6.0.1" />
 </widget>

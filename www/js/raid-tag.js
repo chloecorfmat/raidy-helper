@@ -50,232 +50,169 @@ var app = {
 	}
 };
 var raidID;
+
 function main() {
 	var disconnection = document.getElementById("disconnect");
 	disconnection.addEventListener("click", disconnect);
 
 	raidID = setIDintoTabs();
-	
+	show_history_into_list();
 	if (localStorage.timings == undefined || localStorage.timings == "") {
 		localStorage.timings = "[]";
 	}
 
-	// show competitors
-	var competitors = localStorage.getItem('competitors-'+raidID);
-	if (competitors == null) {
-		document.getElementById('connection-error').innerHTML = "Liste des participants indisponible";
-	} else {
-		var competitors_json = JSON.parse(competitors);
-		show_competitors_into_list(competitors_json);
-	}
-
-	//refresh if online
-	var online = localStorage.getItem('online');
-	if (online == 'true' || online == true) {
-		var r = function (response, http_code) {
-			var response_json = JSON.parse(response);
-			if (http_code == 200) {
-				localStorage.setItem('competitors-'+raidID, response);
-				show_competitors_into_list(response_json)
-			}
-		};
-		apiCall("GET", 'helper/raid/' + raidID + '/competitor', null, r);
-	}
-	var e = document.getElementById("connection-error");
-	nfc.enabled(e.innerHTML="", e.innerHTML="Le NFC doit être activé");
-
 	
-	var checkpoint = JSON.parse(localStorage.pois)[raidID];
-	var is_checkpoint = JSON.parse(checkpoint)["isCheckpoint"];
-    console.log(is_checkpoint);
-	if (is_checkpoint=="1") {
-		var c = document.getElementsByClassName("checkpoint");
-		for (var i=0 ; i<c.length ; i++) {
-			c[i].classList.add('checkpoint-visible');
-		}
-		var checkpoint = JSON.parse(checkpoint)["id"];
-		document.getElementById("form_numbersign").addEventListener("submit", function(e) {
-			e.preventDefault();
-			
-			var numberSign = document.getElementById('numbersign').value;
-			document.getElementById('numbersign').value="";
-			
-			if (localStorage.online == "true") {
-				var r = function(response, http_code) {
-					response = JSON.parse(response);
-					if (response.nfc_serial_id!="") {
-						if (http_code==200) {
-							check_competitor(response.nfc_serial_id, checkpoint, raidID);
-						} else {
-							saveTiming(numberSign, checkpoint);
-						}
-					} else {
-						showToast("Ce dossard n'a pas de badge associé");
-					}
-				};
-				apiCall("GET",'helper/raid/'+raidID+'/race/competitor/numbersign/'+numberSign,null, r);
-			} else {
-				saveTiming(numberSign, checkpoint);
-			}
-			return false;
-		});
-		
-			
-		document.getElementById("check-with-nfc").addEventListener("click", scan_badge);
+	var e = document.getElementById("nfc-error");
+	nfc.enabled(
+		function() {e.innerHTML="";},
+		function() {e.innerHTML="Le NFC doit être activé";});
 
-	
-	}
 	syncTiming();
-
-}
-
-
-function show_competitors_into_list(response_json) {
-	var competitors = document.getElementById("competitors--list");
-	competitors.innerHTML = ""; // clear div
-	document.getElementById('connection-error').innerHTML = ""
-
-	for (var i = 0; i < response_json.length; i = i + 1) {
-		var competitor = response_json[i];
-
-		if (competitor.nfc_serial_id=="") {
-			var action = '<button class="associate" data-competitor-number="'+competitor.number_sign+'" data-race-id="'+competitor.race.id+'">Associer</button>';
-		} else {
-			var action = '<img src="img/icon-check.svg" />'
-		}
-		var e = document.createElement('div');
-		e.innerHTML = '<div class="competitors--list-items">' +
-			'<div class="competitor" id="competitor-' + competitor.number_sign+'-'+competitor.race.id + '">' +
-			'<div class="competitor--content-container">' +
-			'<p class="competitor--title">' + competitor.firstname + " " + competitor.lastname.toUpperCase() + '</p>' +
-			'<p class="competitor--name">Epreuve : '+ competitor.race.name +'</p>' +
-			'<p class="competitor--name">Dossard : ' + competitor.number_sign  + ', Année : ' + competitor.birthyear  + ', Sexe : '+ competitor.sex +'</p>' +
-			'</div>' +
-			'<div class="competitor--content-icons">' + action + '</div>' +
-			'</div>' +
-			'</div>';
-
-		competitors.append(e);
-		var online = localStorage.getItem('online');
-		
-	}
-	init_listener_association();
-
-	if (response_json.length == 0) {
-		document.getElementById('connection-error').innerHTML = "Aucun participant";
-	}
-}
-
-function init_listener_association() {
-	var buttons = document.getElementsByClassName("associate");
-	for (var i = 0; i < buttons.length; i = i + 1) {
-		buttons[i].addEventListener("click", associate);
-	}
-}
-
-function associate() {
-	var button = this;
-	var competitor = button.getAttribute('data-competitor-number');
-	var race = button.getAttribute('data-race-id');
-
-	var active_buttons = document.getElementsByClassName("association-active");
-	for (var i = 0; i < active_buttons.length; i = i + 1) {
-		abort_association(active_buttons[i]);
-	}
-	abort_scan_badge();
-	button.classList.add("association-active");
-	button.innerHTML = "Annuler";
-	button.removeEventListener("click", associate);
-	button.addEventListener("click", abort_association);
+	var checkpoint = JSON.parse(localStorage.pois)[raidID];
+	checkpoint = JSON.parse(checkpoint)["id"];
 	
-	// Read NDEF formatted NFC Tags
-    nfc.addNdefListener (
-        function (nfcEvent) {
-            var tag = nfcEvent.tag,
-			ndefMessage = tag.ndefMessage;
-			var serialnumber = nfc.bytesToHexString(tag.id);
-			document.getElementById("tag-id").innerHTML= serialnumber;
-			if (ndefMessage != []) {
-				var dossard = nfc.bytesToString(ndefMessage[0].payload).substring(3);
-				document.getElementById("tag-msg").innerHTML= dossard;
-				showToast("Badge déjà associé au dossard "+dossard);
-			} else {
-				associate_competitor(serialnumber, competitor, race, raidID)
-				
-			}
-			nfc.removeNdefListener();
-        },
-        function () { // success callback
-            console.log("Waiting for NDEF tag");
-        },
-        function (error) { // error callback
-            console.log("Error adding NDEF listener " + JSON.stringify(error));
-        }
-    );
+	document.getElementById("form_numbersign").addEventListener("submit", function(e) {
+		e.preventDefault();
+
+		var numberSign = document.getElementById('numbersign').value;
+		document.getElementById('numbersign').value="";
+
+		if (localStorage.online == "true") {
+			var r = function(response, http_code) {
+				response = JSON.parse(response);
+				if (http_code==200) {
+					if (response.nfc_serial_id!="") {
+						check_competitor(response.nfc_serial_id, checkpoint, raidID,numberSign);
+						syncTiming();
+					} else {
+						showToast("Le dossard "+numberSign+" n'a pas de badge associé");
+						logToHistory("Le dossard "+numberSign+" n'a pas de badge associé")
+					}
+				} else {
+					saveTiming(numberSign, checkpoint);
+				}
+			};
+			apiCall("GET",'helper/raid/'+raidID+'/competitor/numbersign/'+numberSign,null, r);
+		} else {
+			saveTiming(numberSign, checkpoint);
+		}
+		return false;
+	});
+
+	document.getElementById("check-with-nfc").addEventListener("click", scan_badge);
+
 }
 
-function abort_association(button) {
-	if (this.classList != undefined) {
-		button = this;
+
+function show_history_into_list() {
+	if (localStorage.scanHistory == undefined || localStorage.scanHistory == "") {
+        localStorage.scanHistory = "{}";
+    } else {
+		var sh = JSON.parse(localStorage.scanHistory);
+		if (sh[raidID] == undefined || sh[raidID] == "") {
+			sh[raidID] = "[]";
+		} else {
+			var history = document.getElementById("historique");
+			history.innerHTML = ""; // clear div
+
+			var logs = JSON.parse(sh[raidID]);
+			for (var i = 0; i < logs.length; i = i + 1) {
+				var log = logs[i];
+				var p = document.createElement('p');
+				p.innerHTML = log;
+				history.append(p);
+			}
+		}
 	}
-	nfc.removeNdefListener()
-	button.classList.remove("association-active");
-	button.innerHTML = "Associer";
-	button.removeEventListener("click", abort_association);
-	button.addEventListener("click", associate);
 }
 
 function abort_scan_badge(button) {
-	if (this.classList != undefined) {
-		button = this;
+	var active_scans = document.getElementsByClassName("scan-active");
+	if (active_scans[0]!==undefined) {
+		button = active_scans[0];
+		if (this.classList !== undefined) {
+			nfc.removeNdefListener();
+		}
+		
+		button.classList.remove("scan-active");
+		button.innerHTML = "Activer le scan";
+		button.removeEventListener("click", abort_scan_badge);
+		button.addEventListener("click", scan_badge);
 	}
-	nfc.removeNdefListener()
-	button.classList.remove("scan-active");
-	button.innerHTML = "Checker un badge";
-	button.removeEventListener("click", abort_scan_badge);
-	button.addEventListener("click", scan_badge);
 }
 
 function scan_badge() {
+	abort_scan_badge();
 	var button = this;
 	button.classList.add("scan-active");
-	button.innerHTML = "Annuler";
-	var active_buttons = document.getElementsByClassName("association-active");
-	for (var i = 0; i < active_buttons.length; i = i + 1) {
-		abort_association(active_buttons[i]);
-	}
+	button.innerHTML = "Annuler le scan";
+
+	nfc.removeNdefListener();
+	
 	button.removeEventListener("click", scan_badge);
 	button.addEventListener("click", abort_scan_badge);
 	
-	nfc.addNdefListener (
-		function (nfcEvent) {
-			var tag = nfcEvent.tag,
-			ndefMessage = tag.ndefMessage;
-			var serialnumber = nfc.bytesToHexString(tag.id);
-			document.getElementById("tag-id").innerHTML= serialnumber;
-			var numberSign = nfc.bytesToString(ndefMessage[0].payload);
+	var checkpoint = JSON.parse(localStorage.pois)[raidID];
+	checkpoint = JSON.parse(checkpoint)["id"];
+	
+	function scan_listener(nfcEvent) {
+		var tag = nfcEvent.tag;
+		var serialnumber = nfc.bytesToHexString(tag.id);
 
-			abort_scan_badge(button);	
-
+		if (tag.ndefMessage != undefined && tag.ndefMessage[0] != undefined && tag.ndefMessage[0] != "" && tag.ndefMessage[0].payload != "") {
 			if (localStorage.online == "true") {
-				check_competitor(serialnumber, checkpoint, raidID);
+				check_competitor(serialnumber, checkpoint, raidID, nfc.bytesToString(tag.ndefMessage[0].payload).substr(3));
 				syncTiming();
 			} else {
-				saveTiming(null,checkpoint, serialnumber);
+				saveTiming(nfc.bytesToString(tag.ndefMessage[0].payload).substr(3),checkpoint, serialnumber);
 			}
+
+		} else {
+			if (localStorage.online == "true") {
+				var r = function (response, http_code) {
+					if (http_code == 200) {
+						var response_json = JSON.parse(response);
+						var message = [
+							ndef.textRecord(response_json.number_sign)
+						];
+						nfc.write(message);
+						check_competitor(response_json.nfc_serial_id, checkpoint, raidID, response_json.number_sign);
+					} else {
+						if (http_code == 404) {
+
+							showToast("Ce badge n'est associé à aucun participant");
+							logToHistory("Ce badge n'est associé à aucun participant");
+
+						} else {
+							showToast("Echec de connexion avec le serveur");
+						}
+					}
+				};
+				apiCall("GET", 'helper/raid/' + raidID + '/competitor/nfcserialid/'+serialnumber, null, r);
+			} else {
+				saveTiming("",checkpoint, serialnumber);
+			}
+		}
+	}
+	
+	nfc.addNdefListener (
+		function (nfcEvent) {
+			scan_listener(nfcEvent)
 		},
 		function () { // success callback
-			console.log("Waiting for NDEF tag");
+			console.log("Waiting for NDEF tag in scan");
 		},
 		function (error) { // error callback
 			console.log("Error adding NDEF listener " + JSON.stringify(error));
 		}
 	);
+	
 }
 
 function saveTiming(numberSign, checkpoint, nfc=null) {
+	logToHistory("Passage de dossard "+numberSign+" sauvegardé, une connexion internet est requise");
 	var timings = JSON.parse(localStorage.timings);
-	var d = new Date().toISOString().slice(0, 19).replace('T', ' ');
+	var d = generateDateNow();
 	
 	if (nfc != null) {
 		timings.push('{"nfcid":"'+nfc+'", "time":"'+d+'", "checkpoint_id":"'+checkpoint+'"}');
@@ -296,12 +233,9 @@ function syncTiming() {
 			var r = function(response, http_code) {
 				response = JSON.parse(response);
 				if (http_code==200) {
-					console.log(response);
-					console.log(response.nfc_serial_id);
 					check_competitor(response.nfc_serial_id, timing.checkpoint_id, raidID);
 				} else {
 					newTimings.push(timing);
-					showToast("Echec de connexion avec le serveur");
 				}
 			};
 			apiCall("GET",'helper/raid/'+raidID+'/race/competitor/numbersign/'+timing.numberSign,null, r);
@@ -309,6 +243,8 @@ function syncTiming() {
 			check_competitor(timing.nfcid, timing.checkpoint_id, raidID);
 		}
 	}
-
+	if (timings.length>0 && newTimings.length==0) {
+		logToHistory("Les passages sauvegardés ont été synchronisés avec le serveur");
+	}
 	localStorage.timings = JSON.stringify(newTimings);
 }
