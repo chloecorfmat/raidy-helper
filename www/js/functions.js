@@ -115,3 +115,104 @@ var checkin = function() {
 		showToast("Aucune connexion");
 	}
 }
+
+
+function associate_competitor(message, competitor, race, raid) {
+	var data = {NFCSerialId:message};
+
+	var r = function(response, http_code) {
+		response = JSON.parse(response);
+		if (http_code==200) {
+			
+			var message = [
+				ndef.textRecord(competitor)
+			];
+			
+			nfc.write(message,
+				function() {
+					
+					var icon_container = document.querySelector('#competitor-' + competitor+'-'+race+' .competitor--content-icons');
+					var active_button = document.getElementsByClassName("association-active")[0];
+					icon_container.removeChild(active_button);
+					icon_container.innerHTML = '<img src="img/icon-check.svg" />';
+				},
+				function(error) {
+					showToast("Echec d'écriture sur la puce");
+				}
+			);
+		} else {
+			showToast("Echec de connexion avec le serveur "+http_code+" : "+response.message);
+		}
+	};
+	apiCall("PATCH",'helper/raid/'+raid+'/race/'+race+'/competitor/'+competitor,data, r);
+}
+
+function check_competitor(nfcid,checkpoint, raid, numberSign=null) {
+	var d = generateDateNow();
+	var data = {"NFCSerialId":nfcid, "time":d, "poi_id":checkpoint};
+	var r = function(response, http_code) {
+		response = JSON.parse(response);
+		if (http_code==200) {
+			if (numberSign!=null) {
+				showToast("Passage de dossard "+numberSign+" enregistré avec succès");
+				logToHistory("Passage de dossard "+numberSign+" enregistré avec succès");
+			}
+			
+		} else if (http_code==400 && response.message=="No checkpoint for this poi and this competitor") {
+			showToast("Checkpoint déjà validé pour ce participant");
+			logToHistory("Checkpoint déjà validé pour ce participant")
+
+		} else if (http_code==404 && response.message=="Ce competitor n'existe pas") {
+			showToast("Ce badge n'est associé à aucun participant");
+			nfc.write("");
+		} else if (http_code==400 && response.message=="La course n'est pas en cours") {
+			showToast("La course n'est pas en cours");
+			logToHistory("La course n'est pas en cours");
+		} else {
+			showToast("Echec de connexion avec le serveur");
+			
+		}
+	};
+	apiCall("PUT",'helper/raid/'+raid+'/racetiming',data, r);
+}
+
+function generateDateNow() {
+	return convertUTCDateToLocalDate(new Date()).toISOString().slice(0, 19).replace('T', ' ')
+}
+function convertUTCDateToLocalDate(date) {
+	var newDate = new Date(date.getTime()+date.getTimezoneOffset()*60*1000);
+
+	var offset = date.getTimezoneOffset() / 60;
+	var hours = date.getHours();
+
+	newDate.setHours(hours - offset);
+
+	return newDate;
+}
+
+
+function logToHistory(msg) {
+	if (localStorage.scanHistory == undefined || localStorage.scanHistory == "") {
+        localStorage.scanHistory = "{}";
+    }
+	var scanHistory = JSON.parse(localStorage.scanHistory);
+	if (scanHistory[raidID] == undefined || scanHistory[raidID] == "") {
+        scanHistory[raidID] = "[]";
+    }
+	
+	var h = document.getElementById("historique");
+	var p = document.createElement('p');
+	var d = (new Date);
+	d = format_two_digits(d.getHours()) + ":" + format_two_digits(d.getMinutes());
+	var text = "<strong>"+d+"</strong> "+msg;
+	p.innerHTML = text;
+	h.insertBefore(p, h.firstChild);
+
+	function format_two_digits(n) {
+		return n < 10 ? '0' + n : n;
+	}
+	var sh = JSON.parse(scanHistory[raidID]);
+	sh.unshift(text);
+	scanHistory[raidID] = JSON.stringify(sh);
+	localStorage.scanHistory = JSON.stringify(scanHistory);
+}

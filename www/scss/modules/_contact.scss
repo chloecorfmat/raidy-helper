@@ -26,3 +26,44 @@
     }
   }
 }
+
+.competitor {
+  display: flex;
+  justify-content: space-between;
+
+  .competitor--content-container {
+    width: 65%;
+
+    .competitor--title {
+      margin-bottom: 0;
+    }
+
+    .competitor--name {
+      font-size: .7rem;
+      margin-top: .5rem;
+    }
+  }
+
+  .competitor--content-icons {
+    display: flex;
+    text-align: right;
+    width: 25%;
+
+    img {
+      height: 1.5rem;
+      margin: 1.2rem;
+    }
+  }
+
+  .associate {
+    margin: auto;
+
+    &.association-active {
+      background-color: $secondary-color-2;
+    }
+  }
+}
+
+.scan-active {
+  background-color: $secondary-color-2;
+}

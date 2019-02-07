@@ -12,8 +12,17 @@ th {
 
 a {
   color: $tertiary-color-1;
+  text-decoration: none;
 }
 
 .text--important {
   font-weight: 700;
+}
+
+.text--introducing {
+  text-decoration: underline;
+}
+
+.text--medium {
+  font-style: italic;
 }
