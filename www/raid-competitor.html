@@ -27,7 +27,7 @@
 	<meta name="msapplication-tap-highlight" content="no" />
 	<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
 	<!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
-	<meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' blob: data: ; img-src * 'unsafe-inline' blob: data: ; style-src 'self' 'unsafe-inline'; media-src * ; object-src 'self' blob:" />
+	<meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" />
 
 	<!-- Good default declaration:
     * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
@@ -39,10 +39,7 @@
     -->
 	<!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
 
-	<link rel="stylesheet" type="text/css" href="css/lib/leaflet.css" />
-<!--    <link rel="stylesheet" type="text/css" href="css/lib/fontawesome/css/all.min.css" />-->
-<!--    <link rel="stylesheet" type="text/css" href="css/index.css" />-->
-    <link rel="stylesheet" type="text/css" href="dist/css/styles.css" />
+	<link rel="stylesheet" type="text/css" href="dist/css/styles.css" />
 	<title>Raidy | Raid</title>
 </head>
 
@@ -62,43 +59,26 @@
 			<nav class="nav--tab">
 				<ul>
 					<li><a href="raid-info.html" aria-label="Informations"><button>Informations</button></a></li>
-					<li class="tab--active"><button>Bénévolat</button></li>
+					<li><a href="raid-helper.html" aria-label="Bénévolat"><button>Bénévolat</button></a></li>
 					<li><a href="raid-contact.html" aria-label="Contacts"><button>Contacts</button></a></li>
-					<li><a href="raid-competitor.html" aria-label="Badge"><button>Participants</button></a></li>
+					<li class="tab--active"><button>Participants</button></li>
 				</ul>
 			</nav>
-			
-			<div id="downloadStatusBar" class="statusBar"><span>Début du téléchargement de la carte</span></div>
-			<div id="editorMap" class="map map-editor"></div>
-			
-			<!--Check in button-->
-			<div id="checkInBox" class="checkInBox checkInBox--visible">
-				<div>
-					<a class="mapLink" id=mapLink></a>
-					<p id="myPoiName"></p>
-					<p id="myPoiDistance"></p>
+			<div class="tab--content">
+				<h1>Participants</h1>
+				<p class="form--error" id="nfc-error"></p>
+				<a id="linkToTag" href="raid-tag.html" ><button class="checkpoint checkpoint-button">Badger les participants</button></a>
+
+				<p class="form--error" id="connection-error"></p>
+				<div class="competitors--list" id="competitors--list">
 				</div>
-				<button type=button class="btn full-width" id="checkInButton"></button>
 			</div>
-			
 		</main>
 	</div>
 	<script type="text/javascript" src="cordova.js"></script>
-    <script type="text/javascript" src="js/Track.js"></script>
-    <script type="text/javascript" src="js/Poi.js"></script>
-    <script type="text/javascript" src="js/editor/MapManager.js"></script>
-    <script type="text/javascript" src="js/editor/UIManager.js"></script>
-    <script type="text/javascript" src="js/variables.js"></script>
-    <script type="text/javascript" src="js/functions.js"></script>
-    <script type="text/javascript" src="js/raid-helper.js"></script>
-    <script type="text/javascript" src="js/forms-style.js"></script>
-    <script type="text/javascript" src="js/lib/micromodal.min.js"></script>
-    <script type="text/javascript" src="js/lib/leaflet.js"></script>
-    <script type="text/javascript" src="js/lib/Leaflet.Editable.js"></script>
-    <script type="text/javascript" src="js/lib/leaflet.rotatedMarker.js"></script>
-    <script type="text/javascript" src="js/lib/leaflet.offline/localforage.min.js"></script>
-    <script type="text/javascript" src="js/lib/leaflet.offline/leaflet.offline.js"></script>
-<!--	<script type="text/javascript" src="js/raid-helper.js"></script>-->
+	<script type="text/javascript" src="js/variables.js"></script>
+	<script type="text/javascript" src="js/functions.js"></script>
+	<script type="text/javascript" src="js/raid-competitor.js"></script>
 	<script type="text/javascript">
 		app.initialize();
 	</script>
