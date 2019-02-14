@@ -111,7 +111,7 @@ function show_competitors_into_list(response_json) {
 	for (var i = 0; i < response_json.length; i = i + 1) {
 		var competitor = response_json[i];
 
-		if (competitor.nfc_serial_id=="") {
+		if (competitor.nfc_serial_id=="" && competitor.nfc_serial_id==null) {
 			var action = '<button class="associate" data-competitor-number="'+competitor.number_sign+'" data-race-id="'+competitor.race.id+'">Associer</button>';
 		} else {
 			var action = '<img src="img/icon-check.svg" />'
