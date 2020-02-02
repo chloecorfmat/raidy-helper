@@ -5,6 +5,8 @@ var Poi = function (map) {
     this.name = "";
     this.poiType = null;
     this.requiredHelpers = 0;
+    this.description = "";
+    this.image = "";
 
     this.color = "#000000";
 
@@ -18,11 +20,11 @@ Poi.prototype.toJSON = function(){
             latitude : this.marker.getLatLng().lat,
             longitude : this.marker.getLatLng().lng,
             requiredHelpers : this.requiredHelpers,
-            poiType: this.poiType.id
+            poiType: this.poiType.id,
+            image: this.image,
+            description: this.description
         }
     var json = JSON.stringify(poi);
-    //console.log(this.requiredHelpers);
-   // console.log(this.requiredHelpers);
     return json;
 }
 Poi.prototype.fromObj = function(poi) {
@@ -33,6 +35,8 @@ Poi.prototype.fromObj = function(poi) {
     this.poiType = mapManager.poiTypesMap.get(poi.poiType);
     this.color = this.poiType.color;
     this.requiredHelpers = poi.requiredHelpers;
+    this.description = poi.description;
+    this.image = poi.image;
 
     this.marker = L.marker([poi.latitude, poi.longitude]);
 
@@ -69,9 +73,11 @@ Poi.prototype.buildUI= function (){
         '<h3>' + this.name + '</h3>' +
         '</header>' +
         '<div> ' +
-        '<h4>Bénévoles</h4>' +
-        '<p>' + this.requiredHelpers + ' Requis </p>' +
+        '<h4>' + this.requiredHelpers + ' bénévoles requis</h4>' +
+        '<p> fze' + this.description + '</p>' +
+        '<img src="' + this.image + '" class="leaflet-popup-image"/>' +
         '</div>');
+
    var icon = L.divIcon({
         className: "my-custom-pin",
         iconAnchor: [0, 5],

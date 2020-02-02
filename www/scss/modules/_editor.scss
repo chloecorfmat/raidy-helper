@@ -210,11 +210,16 @@
 
 .leaflet-popup-content {
   margin: 0;
-  padding-bottom: 1rem;
+  padding-bottom: .5rem;
 
   p {
     margin: 0;
   }
+}
+
+.leaflet-popup-image {
+  margin-top: .5rem;
+  max-width: calc(100% - 1rem);
 }
 
 

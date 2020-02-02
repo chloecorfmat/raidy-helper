@@ -9,7 +9,7 @@ const esLint = require('gulp-eslint');
 const cleanCSS = require('gulp-clean-css');
 
 // Linter.
-gulp.task('lint', function() {
+gulp.task('lint', async function() {
 
     gulp.src('./www/scss/**/*.scss')
         .pipe(sassLint())
@@ -18,7 +18,7 @@ gulp.task('lint', function() {
     return null;
 });
 
-gulp.task('styles', function() {
+gulp.task('styles', async function() {
     // place code for your default task here
     return gulp.src('./www/scss/**/*.scss')
         .pipe(sass().on('error', sass.logError))
@@ -35,12 +35,12 @@ gulp.task('styles', function() {
         .pipe(gulp.dest('./www/dist/css'));
 });
 
-gulp.task('default', ['lint', 'styles'], function() {
+gulp.task('default', gulp.series('lint', 'styles'), async function() {
     // place code for your default task here
     return null;
 });
 
-gulp.task('watch', function () {
+gulp.task('watch', async function () {
     gulp.watch('./www/scss/**/*.scss', ['lint']);
     gulp.watch('./www/scss/**/*.scss', ['styles']);
 });
